@@ -1,6 +1,6 @@
 ---
 title: "Motor Vehicle Sales: Signs of Supply Side Disruptions?"
-description: |
+description: 
   Let's parse the latest data on motor vehicle sales
 author:
   - name: Philipp Maier
@@ -378,10 +378,6 @@ Predictably, during the pandemic, car sales dropped, accompanied by a spike in i
 
 Motor vehicle sales represent a sizable portion of consumer spending. At this stage it is not straightforward to assess how important supply constraints are in the overall economic picture, but from this data it is clear that supply bottlenecks are real.
 
-Interestingly, while all automakers seem to suffer, a look at detailed data seems to suggest that notably light truck sales are driving the decline. Given the importance of trucks for U.S. car makers, they are among the hardest hit.
-
-
-
 
 ```{r Car Sales Details, echo=FALSE}
 
@@ -392,4 +388,9 @@ Interestingly, while all automakers seem to suffer, a look at detailed data seem
     par(mfrow=c(1,1))
 
 ```
+
+Interestingly, while all automakers seem to suffer, a look at detailed data seems to suggest that notably light truck sales are driving the decline. Given the importance of trucks for U.S. car makers, they are among the hardest hit.
+
+
+Updates to these charts will be posted on Twitter as new data becomes available.
 

@@ -440,7 +440,7 @@ Let's look at GDP first, the most comprehensive measure of economi activity. The
 
 # Why Does It Matter?
 
-The panels below show the key GDP components. While private consumption is roughly on par with other recoveries, government spending seems a little slower. Overall, given the depths of the recession, the recovery is proceeding remarkably swift so far.
+The panels below show the key GDP components. While private consumption is roughly on par with other recoveries, government spending seems a little slower. 
 
 
 
@@ -455,3 +455,6 @@ The panels below show the key GDP components. While private consumption is rough
 
 ```
 
+Overall, given the depths of the recession, the recovery is proceeding remarkably swift so far.
+
+Updates to these charts will be posted on Twitter as new data becomes available.

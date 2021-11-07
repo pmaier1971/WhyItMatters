@@ -423,6 +423,4 @@ Chart.InflationOverview(series = c( "US.CPI.Headline.mm.yy","US.CPI.FoodBeverage
 Updates to these charts will be posted on Twitter as new data becomes available.
 
 
-Note: This post was created with Distill. Learn more about using Distill at <https://rstudio.github.io/distill>.
-
 

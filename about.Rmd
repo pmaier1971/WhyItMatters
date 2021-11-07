@@ -9,3 +9,6 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 Dad. Passionate economist. Intrigued by current developments. Worked for several central banks, and cares deeply about growth, inflation and interest rates. 
+
+
+Note: All posts created with R / RStudio / Distill. Learn more about using Distill at <https://rstudio.github.io/distill>.

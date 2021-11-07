@@ -2,7 +2,7 @@
   {
     "path": "posts/2021-11-07-inflation/",
     "title": "Inflation",
-    "description": "Why Do We Care About Inflation?",
+    "description": "What's the Issue With Inflation?",
     "author": [
       {
         "name": "Philipp Maier",
@@ -11,9 +11,9 @@
     ],
     "date": "2021-11-07",
     "categories": [],
-    "contents": "\nLet’s review why we care about inflation - and what the differences are between relative price changes and changes in the price level.\nChanges in the price level\nThe following plot shows headline inflation.\n\n\n\nThe following charts break down changes in individual inflation components:\n\n\n\nHow broad -ased is the increase in inflation? Relative to pre-pandemic times, it looks as if most key components show rising prices.\n\n\n\nNote: This post was created with Distill. Learn more about using Distill at https://rstudio.github.io/distill.\n\n\n\n",
+    "contents": "\nBackground\nPrices change all the time. Why do we care so much about inflation? Are all price changes created equal? And are all equally concerning?\nFirst up - let’s define what inflation is, and the differences are between relative price changes and changes in the price level.\nInflation or a change in the price level can be defined as “a general progressive increase in prices of goods and services in an economy” (https://en.wikipedia.org/wiki/Inflation). This erodes the value of cash, as one is able to buy less goods and services with existing money. Inflation is typically measured by tracking the costs to purchase a defined basked of goods over time.\nA change in relative prices means that the price for good A goes up, while the price for good B goes down. Even if the overall price level - i.e. the weighted average paid for both good - does not change, relative price change make good A more or less expensive, relative to good B. Relative price changes happen all the time - e.g. the cost of computers has fallen dramatically over time, while rents or the cost of education has risen.\nRelative price changes are common, but central banks are concerned about increases in the general price level, because it erodes the purchasing power of consumers and makes it more difficult to plan ahead. Developments can become concerning once broad-based price increases translate into changes in expected inflation.\nSo, let’s see how the economy was doing at the time this post was written.\nAnalysis: Where do we currently stand?\nThe following chart shows the evolution of inflation (specifically: headline inflation, or a broad consumer price index) since 1997. Shaded areas indicate recessions. Two elements stand out:\nFirst, during recessions, headline inflation tend to fall. In part, this is because the most volatile parts of the consumer basket sees sharp declines, and we would expect an inflation measure excluding components like food or energy to be more stable.\nSecond, inflation is currently at the highest level in over 20 years.\n\n\n\nLet’s dive deeper. The following charts break down changes in individual inflation components. Not surprisingly, during past recessions core inflation fell less than headline inflation, and the current increase is less pronouced (first chart, top-left panel).\n\n\n\nWhy Does It Matter?\nCentral banks are less likely to respond to relative price changes than to broad-based changes in inflation. Let’s check: How broad-based is the increase in inflation?\nAs the last chart shows, relative to pre-pandemic times, most key components show rising prices. While it’s too early for the final verdict, these charts support the notion that the current increase in inflation is fairly broad-based, and central banks will need to monitor it carefully.\n\n\n\nUpdates to these charts will be posted on Twitter as new data becomes available.\n\n\n\n",
     "preview": "posts/2021-11-07-inflation/inflation_files/figure-html5/HeadlineInflation-1.png",
-    "last_modified": "2021-11-07T12:05:11-05:00",
+    "last_modified": "2021-11-07T16:13:18-05:00",
     "input_file": {}
   },
   {
@@ -28,10 +28,10 @@
     ],
     "date": "2021-11-07",
     "categories": [],
-    "contents": "\nBackdrop\nDuring the pandemic, auto sales fell off a cliff, but recovered swiftly. The most recent data shows, however, that car sales are slumping again. Why?\nSudden changes in auto sales can be demand or supply driven.\nIn normal circumstances, a sudden decline in auto sales leads to a corresponding increase in auto inventory\nIf the decline is supply driven, a decline in auto sales will be accompanied by a decline in inventories, as dealers sell of remaining stock to meet demand.\nLet’s take a look at the data.\n\n\n\nPredictably, during the pandemic, car sales dropped, accompanied by a spike in inventory. This suggests that the decline was demand-driven. More recently, however, the very low inventory suggests that car sales are supply-constrained.\nWhy Does It Matter?\nMotor vehicle sales represent a sizable portion of consumer spending. At this stage it is not straightforward to assess how important supply constraints are in the overall economic picture, but from this data it is clear that supply bottlenecks are real.\nInterestingly, while all automakers seem to suffer, a look at detailed data seems to suggest that notably light truck sales are driving the decline. Given the importance of trucks for U.S. car makers, they are among the hardest hit.\n\n\n\n\n\n\n",
-    "preview": "posts/2021-11-07-motor-vehicle-sales-supply-side-disruptions/motor-vehicle-sales-supply-side-disruptions_files/figure-html5/Car Sales Details-1.png",
-    "last_modified": "2021-11-07T15:54:59-05:00",
-    "input_file": "motor-vehicle-sales-supply-side-disruptions.knit.md"
+    "contents": "\nBackdrop\nDuring the pandemic, auto sales fell off a cliff, but recovered swiftly. The most recent data shows, however, that car sales are slumping again. Why?\nSudden changes in auto sales can be demand or supply driven.\nIn normal circumstances, a sudden decline in auto sales leads to a corresponding increase in auto inventory\nIf the decline is supply driven, a decline in auto sales will be accompanied by a decline in inventories, as dealers sell of remaining stock to meet demand.\nLet’s take a look at the data.\n\n\n\nPredictably, during the pandemic, car sales dropped, accompanied by a spike in inventory. This suggests that the decline was demand-driven. More recently, however, the very low inventory suggests that car sales are supply-constrained.\nWhy Does It Matter?\nMotor vehicle sales represent a sizable portion of consumer spending. At this stage it is not straightforward to assess how important supply constraints are in the overall economic picture, but from this data it is clear that supply bottlenecks are real.\n\n\n\nInterestingly, while all automakers seem to suffer, a look at detailed data seems to suggest that notably light truck sales are driving the decline. Given the importance of trucks for U.S. car makers, they are among the hardest hit.\nUpdates to these charts will be posted on Twitter as new data becomes available.\n\n\n\n",
+    "preview": {},
+    "last_modified": "2021-11-07T16:10:51-05:00",
+    "input_file": {}
   },
   {
     "path": "posts/2021-11-07-post-pandemic-recovery/",
@@ -45,10 +45,10 @@
     ],
     "date": "2021-11-07",
     "categories": [],
-    "contents": "\nBackdrop\nEvery recession is different, but two exceptional ones were the 2008/09 financial crisis and the 2020 COVID pandemic. Both recessions were more severe than any other post-WW II recessions.\nHow does the post-recession recovery compare to history? To answer this, we index key economic indicators to their pre-recession peak, and trace their evolution through time.\nAnalysis\nLet’s look at GDP first, the most comprehensive measure of economi activity. The chart below shows\nthe unprecedented depth of the economic contraction, and\nthe swift initial rebound, as economic activity restarted,\nthe slower expansion as the pandemic continued to linger\n\n\n\nWhy Does It Matter?\nThe panels below show the key GDP components. While private consumption is roughly on par with other recoveries, government spending seems a little slower. Overall, given the depths of the recession, the recovery is proceeding remarkably swift so far.\n\n\n\n\n\n\n",
-    "preview": "posts/2021-11-07-post-pandemic-recovery/post-pandemic-recovery_files/figure-html5/GDP Expansion Plot-1.png",
-    "last_modified": "2021-11-07T16:01:18-05:00",
-    "input_file": "post-pandemic-recovery.knit.md"
+    "contents": "\nBackdrop\nEvery recession is different, but two exceptional ones were the 2008/09 financial crisis and the 2020 COVID pandemic. Both recessions were more severe than any other post-WW II recessions.\nHow does the post-recession recovery compare to history? To answer this, we index key economic indicators to their pre-recession peak, and trace their evolution through time.\nAnalysis\nLet’s look at GDP first, the most comprehensive measure of economi activity. The chart below shows\nthe unprecedented depth of the economic contraction, and\nthe swift initial rebound, as economic activity restarted,\nthe slower expansion as the pandemic continued to linger\n\n\n\nWhy Does It Matter?\nThe panels below show the key GDP components. While private consumption is roughly on par with other recoveries, government spending seems a little slower.\n\n\n\nOverall, given the depths of the recession, the recovery is proceeding remarkably swift so far.\nUpdates to these charts will be posted on Twitter as new data becomes available.\n\n\n\n",
+    "preview": {},
+    "last_modified": "2021-11-07T16:12:03-05:00",
+    "input_file": {}
   },
   {
     "path": "posts/welcome/",
@@ -62,9 +62,9 @@
     ],
     "date": "2021-11-06",
     "categories": [],
-    "contents": "\nEconomics is a complex topic, and everyone has their own favorite metric or indicator. In this blog we explain what we’re focused on, and why. Not saying that this is the only way to think about economics, or that this is the right way, but rather outlining why we look at what we’re looking at.\nUpdated tweets with the latest economic data can then be found here:\nhttps://twitter.com/EconomicsShiny\n\n\n\n",
+    "contents": "\n<<<<<<< HEAD\nEconomics is a complex topic, and everyone has their own favorite metric or indicator. In this blog we explain what we’re focused on, and why. Not saying that this is the only way to think about economics, or that this is the right way, but rather outlining why we look at what we’re looking at.\nUpdated tweets with the latest economic data can then be found here:\n=======\nLots of information about economics is out there. Here we explain what we’re focused on, and why. Updated tweets with the latest economic data can then be found here:\n>>>>>>> 19fcf31a50e6b585e081fe49725a3059358b634b\nhttps://twitter.com/EconomicsShiny\n\n\n\n",
     "preview": {},
-    "last_modified": "2021-11-07T12:40:51-05:00",
+    "last_modified": "2021-11-07T16:03:53-05:00",
     "input_file": {}
   }
 ]
