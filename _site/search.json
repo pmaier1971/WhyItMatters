@@ -3,17 +3,17 @@
     {
       "path": "about.html",
       "title": "About this blog",
-      "description": "Some additional details about the blog",
+      "description": "Background: Why economic analysis matters",
       "author": [],
-      "contents": "\n\n\n\n",
-      "last_modified": "2021-11-06T23:26:22-04:00"
+      "contents": "\nSome background on my Twitter feed.\n\n\n\n",
+      "last_modified": "2021-11-07T10:19:00-05:00"
     },
     {
       "path": "index.html",
       "title": "Economic Tidbits: Why It Matters",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2021-11-06T23:26:22-04:00"
+      "last_modified": "2021-11-07T10:19:01-05:00"
     }
   ],
   "collections": ["posts/posts.json"]
