@@ -3,17 +3,17 @@
     {
       "path": "about.html",
       "title": "About this blog",
-      "description": "Background: Why economic analysis matters",
+      "description": "Background: Why this blog",
       "author": [],
-      "contents": "\nSome background on my Twitter feed.\n\n\n\n",
-      "last_modified": "2021-11-07T10:19:37-05:00"
+      "contents": "\nDad. Passionate economist. Worked for several central banks, and cares deeply about growth, inflation and interest rates.\n\n\n\n",
+      "last_modified": "2021-11-07T12:05:40-05:00"
     },
     {
       "path": "index.html",
       "title": "Economic Tidbits: Why It Matters",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2021-11-07T10:19:38-05:00"
+      "last_modified": "2021-11-07T12:05:11-05:00"
     }
   ],
   "collections": ["posts/posts.json"]

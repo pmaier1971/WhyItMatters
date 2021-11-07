@@ -1,7 +1,7 @@
 ---
 title: "Inflation"
 description: |
-  Why Do We Care About Inflation?
+  What's the Issue With Inflation?
 author:
   - name: Philipp Maier
     url: https://twitter.com/EconomicsShiny
@@ -340,7 +340,13 @@ Chart.InflationOverview <- function(series,tweet = FALSE, tweet.text = "") {
 ```
 
 
-Let's review why we care about inflation - and what the differences are between *relative* price changes and *changes in the price level*.
+#Background
+
+Prices change all the time. Why do we care so much about inflation? Are all price changes created equal? And are all equally concerning?
+
+First up - let's define what inflation is, and the differences are between *relative* price changes and *changes in the price level*.
+
+
 
 # Changes in the price level
 
@@ -388,7 +394,7 @@ Chart.Four(series1 = "US.CPI.Medical.mm.yy",
 
 ```
 
-How broad -ased is the increase in inflation? Relative to pre-pandemic times, it looks as if most key components show rising prices. 
+How broad-based is the increase in inflation? Relative to pre-pandemic times, it looks as if most key components show rising prices. 
 
 ```{r Inflation Summary, echo=FALSE}
 
@@ -402,6 +408,7 @@ Chart.InflationOverview(series = c( "US.CPI.Headline.mm.yy","US.CPI.FoodBeverage
 
 
 
-Learn more about using Distill at <https://rstudio.github.io/distill>.
+
+Note: This post was created with Distill. Learn more about using Distill at <https://rstudio.github.io/distill>.
 
 

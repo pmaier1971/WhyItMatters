@@ -23,7 +23,9 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
-Lots of information about economics is out there. Here we explain what we're focused on, and why. Updated tweets with the latest economic data can then be found here:
+Economics is a complex topic, and everyone has their own favorite metric or indicator. In this blog we explain what we're focused on, and why. Not saying that this is the only way to think about economics, or that this is the right way, but rather outlining why we look at what we're looking at.
+
+Updated tweets with the latest economic data can then be found here:
 
 https://twitter.com/EconomicsShiny
 
