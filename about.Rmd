@@ -1,0 +1,10 @@
+---
+title: "About this blog"
+description: |
+  Background: Why economic analysis matters
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+Some background on my Twitter feed.
