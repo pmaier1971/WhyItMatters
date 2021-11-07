@@ -1,0 +1,395 @@
+---
+title: "Motor Vehicle Sales: Signs of Supply Side Disruptions?"
+description: |
+  Let's parse the latest data on motor vehicle sales
+author:
+  - name: Philipp Maier
+    url: https://twitter.com/EconomicsShiny
+date: 2021-11-07
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.width=15, fig.height=10) 
+
+pkgTest <- function(x)
+{
+  if (!require(x,character.only = TRUE))
+  {
+    install.packages(x,dep=TRUE)
+    if(!require(x,character.only = TRUE)) stop("Package not found")
+  }
+}
+
+pkgTest("fredr")
+pkgTest("RColorBrewer")
+pkgTest("reshape")
+pkgTest("quantmod")
+pkgTest("zoo")
+pkgTest("dplyr")
+pkgTest("forecast")
+pkgTest("lubridate")
+pkgTest("httr")
+pkgTest("jsonlite")
+pkgTest("rtweet")
+pkgTest("httr")
+pkgTest("tis")
+pkgTest("tm")
+
+## Credentials
+
+FRED_API_KEY <- "4a91875abccae0ee89966c96d8760b60"
+fredr_set_key(FRED_API_KEY)
+
+
+# Data Download
+
+Data.US <- c("US.Transportation.Rail" = "RAILFRTINTERMODALD11",
+             "US.Transportation.Railpassenger" = "RAILPMD11",
+             "US.Transportation.Air" = "LOADFACTORD11",
+             "US.Transportation.Airtraffic.Passenger" = "ASMD11",
+             "US.Transportation.Airtraffic.International" = "ASMI",
+             "US.Transportation.Index" = "TSIFRGHT",
+             "US.Transportation.PublicTransit" = "TRANSITD11",
+             
+             "US.HouseholdDebt" = "HDTGPDUSQ163N",
+             "US.Housing.NewPrivateHousingStarts"="HOUSTNSA",
+             "US.Housing.NewPrivateHousingPermits"="PERMIT",
+             "US.Housing.NewPrivateHousingConstruction"="UNDCONTNSA",
+             "US.Housing.NewPrivateHousingCompleted"="COMPUTSA",
+             "US.Housing.NewPrivate1UnitCompleted"="COMPU1USA",
+             "US.Housing.NewPrivate2UnitCompleted"="COMPU24USA",
+             "US.Housing.NewPrivate5UnitCompleted"="COMPU5MUSA",
+             "US.Housing.30YMortgageRate"="MORTGAGE30US",
+             "US.Housing.NewHomeSales" = "HSN1F",
+             "US.Housing.ExistingHomeSales" = "EXHOSLUSM495S",
+             "US.Housing.MonthlySupply"="MSACSR",
+             "US.Housing.AllTransactionsPriceIndex"="USSTHPI",
+             "US.Housing.CaseShiller" = "CSUSHPINSA",
+             
+             "US.Auto.Autosales" = "ALTSALES",
+             "US.Auto.LightAutos" = "LAUTOSA",
+             "US.Auto.LightTrucks" = "LTRUCKSA",
+             "US.Auto.AutosDomestic" = "DAUTOSAAR",
+             "US.Auto.AutosForeign" = "FAUTOSAAR",
+             
+             "US.Auto.InventorySalesRatio" = "AISRSA",
+             "US.Auto.MilesTraveled" = "M12MTVUSM227NFWA"
+)
+
+
+Data.Description <- data.frame( 
+  Mnemonic = names(Data.US), 
+  Code = Data.US,
+  Description = "", 
+  Frequeny = "",
+  Units = "",
+  LastUpdate = ""
+  )
+  
+for ( idx in 1:nrow(Data.Description) ) {
+  cat(paste("  - ", Data.Description[idx,1], "\n"))
+  x = fredr_series(series_id = Data.Description[idx,2])
+  Data.Description[idx, 3 ] = x$title
+  Data.Description[idx, 4 ] = x$frequency
+  Data.Description[idx, 5] = x$units
+  Data.Description[idx, 6] = x$last_updated
+}
+
+
+## Misc. functions
+
+misc.FREDdowload <- function(series) {
+  
+  if (!(exists(series))) {
+    x = fredr( series_id = Data.Description[Data.Description$Mnemonic == series,2] )
+    x = zoo(x$value, as.Date(x$date))
+    if ((series == "US.H8.FedFundsSold") || (series == "US.H8.TradingAssets")) x = x / 1000
+    if ( substr(series, (nchar(series)-5), nchar(series)) == ".mm.yy") x <- 100*log(x / stats::lag(x, -12))
+    if ( substr(series, (nchar(series)-5), nchar(series)) == ".qq.yy") x <- 100*log(x / stats::lag(x, -4))
+    if ( substr(series, (nchar(series)-2), nchar(series)) == ".qq") x <- 100*log(x / stats::lag(x, -1))
+    
+  } else assign("x", get(series))
+  
+  assign(series, x, envir = .GlobalEnv)
+  return(x)
+}
+
+
+misc.NBER.Recessions <- function(){
+  NBER.Recessions <- as.Date(as.character(t(nberDates())), format="%Y%m%d")
+  Limits <- par('usr')
+  for (idx in seq(1, length(NBER.Recessions), 2) ) {
+    rect(NBER.Recessions[idx], Limits[3], NBER.Recessions[idx+1], Limits[4], col="#0000FF19", lty=0)
+  }
+}
+
+
+Chart.Panel <- function(x, series) {
+  
+  chart.col   = brewer.pal(6, "Paired")[6]
+  chart.ylim  = c(0.9*range(x, na.rm=TRUE)[1], 1.1*range(x, na.rm=TRUE)[2])
+  chart.title = Data.Description[Data.Description$Mnemonic == series,3]
+  
+  plot(as.zoo(x), main = chart.title, 
+       col = chart.col, 
+       lwd = 3, 
+       ylim = chart.ylim,
+       ylab = Data.Description[grep(series, Data.Description[,1]),5],
+       xlab = paste0("Period: ", year(index(x[1])), " - ", year(index(tail(x[1]))), " (shaded areas indicate U.S. recessions)"))
+  
+  points( index(tail(x, 1)), tail(x,1), col = chart.col, pch = 19, lwd = 5)
+  abline(v = as.Date(paste0(seq( year(index(x[1])), year(Sys.Date()), 1), "-01-01")), lty = 3, lwd = 0.5)
+  misc.NBER.Recessions()
+  
+  text(index(tail(x,round(.15*length(x)))[1]), 1.1*tail(x,1), paste("Latest obs.\n", round(tail(x,1),2)), font = 2)
+  grid()
+  legend("bottomleft", "Data: St. Louis FRED", cex=.5)
+  
+}
+
+
+Chart.Single <- function(series, periods, tweet = FALSE, tweet.text = ""){
+  
+  x = misc.FREDdowload(series = series)
+  x = x[year(index(x))>(year(Sys.Date())-periods)]
+  
+  chart.col   = brewer.pal(6, "Paired")[6]
+  chart.ylim  = c(0.9*range(x, na.rm=TRUE)[1], 1.1*range(x, na.rm=TRUE)[2])
+  chart.title = Data.Description[Data.Description$Mnemonic == series,3]
+  if (nchar(chart.title) > 25) chart.title = gsub(":", ":\n", chart.title)
+  
+  plot(as.zoo(x), main = chart.title, 
+       #ylab = "", 
+       col = chart.col, 
+       lwd = 3, 
+       ylim = chart.ylim,
+       ylab = "Source: FRED, Federal Reserve Bank of St. Louis",
+       xlab = paste0("Period: ", year(index(x[1])), " - ", year(index(tail(x,1))), " (shaded areas indicate U.S. recessions)"))
+  points( index(tail(x, 1)), tail(x,1), col = chart.col, pch = 19, lwd = 5)
+  abline(v = as.Date(paste0(seq( year(index(x[1])), year(Sys.Date()), 1), "-01-01")), lty = 3, lwd = 0.5)
+  misc.NBER.Recessions()
+  legend("bottomleft", "Data: St. Louis FRED", cex=.5)
+  text(index(tail(x,round(.15*length(x)))[1]), 1.1*tail(x,1), paste("Latest obs.\n", round(tail(x,1),2)), font = 2)
+  
+  grid()
+}
+
+
+
+Chart.Duo <- function(series1, series2, periods, tweet = FALSE, tweet.text = ""){
+  
+    x1 = misc.FREDdowload(series = series1)
+    x2 = misc.FREDdowload(series = series2)
+    
+    x1 = x1[year(index(x1))>(year(Sys.Date())-periods)]
+    x2 = x2[year(index(x2))>(year(Sys.Date())-periods)]
+    
+    if (tweet) {
+      tmp <- tempfile(fileext = ".png")
+      png(tmp, 24, 12, "in", res = 127.5)
+    } else png(filename=paste0(series1, ".png"), 24, 12, "in", res=127.5)
+    
+    par(mfrow=c(1,2))
+    
+    chart.col   = brewer.pal(6, "Paired")[6]
+    chart.ylim  = c(0.9*range(x1, na.rm=TRUE)[1], 1.1*range(x1, na.rm=TRUE)[2])
+    chart.title = Data.Description[Data.Description$Mnemonic == series1,3]
+    
+    
+    
+    
+    plot(as.zoo(x1), main = chart.title, 
+         col = chart.col, 
+         lwd = 3, 
+         ylim = chart.ylim,
+         #ylab = "Source: FRED, Federal Reserve Bank of St. Louis",
+         ylab = ifelse ( substr(series1, (nchar(series1)-5), nchar(series1)) == ".qq.yy", "Y/Y growth (in %)", Data.Description[grep(series1, Data.Description[,1]),5]),
+         xlab = paste0("Period: ", year(index(x1[1])), " - ", year(index(tail(x1,1))), " (shaded areas indicate U.S. recessions)"))
+    points( index(tail(x1, 1)), tail(x1,1), col = chart.col, pch = 19, lwd = 5)
+    abline(v = as.Date(paste0(seq( year(index(x1[1])), year(Sys.Date()), 1), "-01-01")), lty = 3, lwd = 0.5)
+    misc.NBER.Recessions()
+    
+    text(index(tail(x1,round(.15*length(x1)))[1]), 1.1*tail(x1,1), 
+         ifelse ( substr(series1, (nchar(series1)-5), nchar(series1)) == ".qq.yy", 
+                  paste("Latest obs.\n", round(tail(x1,1),2),"%"),
+                  paste("Latest obs.\n", round(tail(x1,1),2))), font = 2)
+    grid()
+    legend("bottomleft", "Data: St. Louis FRED", cex=.6)
+    
+    chart.col   = brewer.pal(6, "Paired")[6]
+    chart.ylim  = c(0.9*range(x2, na.rm=TRUE)[1], 1.1*range(x2, na.rm=TRUE)[2])
+    chart.title = Data.Description[Data.Description$Mnemonic == series2, 3]
+    
+    plot(as.zoo(x2), main = chart.title, 
+         col = chart.col, 
+         lwd = 3, 
+         ylim = chart.ylim,
+         ylab = ifelse ( substr(series2, (nchar(series2)-5), nchar(series2)) == ".qq.yy", "Y/Y growth (in %)", Data.Description[grep(series2, Data.Description[,1]),5]),
+         xlab = paste0("Period: ", year(index(x2[1])), " - ", year(index(tail(x2,1))), " (shaded areas indicate U.S. recessions)"))
+    points( index(tail(x2, 1)), tail(x2,1), col = chart.col, pch = 19, lwd = 5)
+    abline(v = as.Date(paste0(seq( year(index(x2[1])), year(Sys.Date()), 1), "-01-01")), lty = 3, lwd = 0.5)
+    misc.NBER.Recessions()
+    
+    text(index(tail(x2,round(.15*length(x2)))[1]), 1.1*tail(x2,1), 
+         ifelse ( substr(series2, (nchar(series2)-5), nchar(series2)) == ".qq.yy",
+                  paste("Latest obs.\n", round(tail(x2,1),2),"%"),
+                  paste("Latest obs.\n", round(tail(x2,1),2))), font = 2)
+    grid()
+    legend("bottomleft", "Data: St. Louis FRED", cex=.6)
+    
+    
+    par(mfrow=c(1,1))
+    dev.off()
+    
+    if (tweet) {
+      post_tweet(tweet.text, media = tmp)
+    email <- gm_mime() %>%
+      gm_to("pmaier1971@gmail.com") %>%
+      gm_from("pmaier1971@gmail.com") %>%
+      gm_subject("R Script Successfully Completed") %>%
+      gm_attach_file(tmp) %>%
+      gm_html_body("<html>R-script <strong>successfully</strong> completed</html>")
+    gm_send_message(email)
+    }
+
+}
+
+
+
+Chart.Four <- function(series1, series2, series3, series4, periods, tweet = FALSE, tweet.text = ""){
+  
+  x1 = misc.FREDdowload(series = series1)
+  x2 = misc.FREDdowload(series = series2)
+  x3 = misc.FREDdowload(series = series3)
+  x4 = misc.FREDdowload(series = series4)
+  
+  x1 = x1[year(index(x1))>(year(Sys.Date())-periods)]
+  x2 = x2[year(index(x2))>(year(Sys.Date())-periods)]
+  x3 = x3[year(index(x3))>(year(Sys.Date())-periods)]
+  x4 = x4[year(index(x4))>(year(Sys.Date())-periods)]
+  
+  par(mfrow=c(2,2))
+  
+  Chart.Panel(x = x1, series = series1)
+  Chart.Panel(x = x2, series = series2)
+  Chart.Panel(x = x3, series = series3)
+  Chart.Panel(x = x4, series = series4)
+
+  par(mfrow=c(1,1))
+}
+
+
+
+Chart.DoublePanel <- function(series1, series2, periods) {
+  
+  x1 = misc.FREDdowload(series1) 
+  x2 = misc.FREDdowload(series2)
+  
+  plot.data = merge(x1, x2)
+  plot.data = plot.data[year(index(plot.data))>(year(Sys.Date())-periods)]
+  names(plot.data) <- gsub("Motor Vehicle Retail Sales: ", "", c(Data.Description[Data.Description$Mnemonic == series1,3], Data.Description[Data.Description$Mnemonic == series2,3]) )
+  
+  chart.col   = brewer.pal(6, "Paired")[1:2]
+  chart.ylim  = c(0.9*range(plot.data, na.rm=TRUE)[1], 1.1*range(plot.data, na.rm=TRUE)[2])
+  chart.title = "Motor Vehicle Retail Sales" #Data.Description[Data.Description$Mnemonic == series1,3]
+  
+  plot(plot.data[,1], col = chart.col, main = chart.title, type = "n", 
+       ylim = chart.ylim, 
+       ylab = Data.Description[Data.Description$Mnemonic == series1,5], 
+       xlab = "")
+  legend("topleft", names(plot.data), fill = chart.col, bty = "n")
+  
+  for (idx in 1:ncol(plot.data)) {
+    lines(plot.data[,idx], col = chart.col[idx])
+    points( index(tail(plot.data[,idx], 1)), tail(plot.data[,idx],1), col = chart.col[idx], pch = 19, lwd = 5)
+    text(index(tail(plot.data[,idx],round(.15*length(x2)))[1]), 1.1*tail(plot.data[,idx],1), 
+         paste("Latest obs.\n", round(tail(plot.data[,idx],1),2)), font = 2)
+  }
+  misc.NBER.Recessions()
+  
+  grid()
+  legend("bottomleft", "Data: St. Louis FRED", cex=.5)
+  
+}
+
+
+
+Chart.InflationOverview <- function(series,tweet = FALSE, tweet.text = "") {
+  
+  x = data.frame(date = index(get(series[1])),
+                 Reduce(function(...) merge(..., all=T), mget(series, ifnotfound = "not found", inherits = TRUE)),
+                 year = year(index(get(series[1]))) )
+  
+  x = aggregate(x, list(x$year), FUN = mean)
+  x = x[x$year %in% c("2017", "2018", "2021", "2022"),]
+  
+  plot.data   =  t( as.matrix(x[3:(ncol(x)-1)]) )
+  colnames(plot.data) = x[,"year"]
+  plot.ylim   = c(1.15 * min(0, plot.data), 1.15*range(plot.data)[2])
+  plot.col    = brewer.pal(nrow(plot.data), "Paired")
+  plot.legend = character()
+  for (idx in 1 : length(series)) plot.legend = c(plot.legend, gsub("Consumer Price Index for All Urban Consumers: ", "", Data.Description[Data.Description$Mnemonic == series[idx],3]))
+  
+  bp = barplot(plot.data, beside = T, col = plot.col, main = "Consumer Price Index for All Urban Consumers:\n Average Annual Inflation by Component", ylim = plot.ylim )
+  
+  limits = par('usr')
+  rect(mean(c(bp[nrow(bp),2], bp[1,3])), 0, limits[2], limits[4], lty = 3, lwd = 4)
+  
+  text(bp, 1.1* plot.data, paste0(round(plot.data,1),"%"), font = 2, cex = .8)
+  
+  legend("topleft", plot.legend, fill = plot.col, cex = .7, bty = 'n')
+  legend("bottomleft", "Data: St. Louis FRED", cex=.5)
+ 
+}
+
+
+
+```
+
+# Backdrop
+
+During the pandemic, auto sales fell off a cliff, but recovered swiftly. The most recent data shows, however, that car sales are slumping again. Why?
+
+Sudden changes in auto sales can be demand or supply driven. 
+
+* In normal circumstances, a sudden decline in auto sales leads to a corresponding *increase* in auto inventory
+* If the decline is supply driven, a decline in auto sales will be accompanied by a *decline* in inventories, as dealers sell of remaining stock to meet demand.
+
+Let's take a look at the data.
+
+```{r Car Sales, echo=FALSE}
+
+Chart.Duo(series1="US.Auto.Autosales", series2="US.Auto.InventorySalesRatio",
+          periods = 25,
+          tweet = ( as.Date( as.character(tail( fredr_release_dates(release_id = 93L) ,1)[,2]) ) == Sys.Date() ),  
+          tweet.text = "Low vehicles sales and low inventory the result of supply chain discriptions (source: FRED) #vehiclesales #rstats")
+
+```
+
+Predictably, during the pandemic, car sales dropped, accompanied by a spike in inventory. This suggests that the decline was demand-driven. More recently, however, the very low inventory suggests that car sales are supply-constrained.
+
+
+# Why Does It Matter?
+
+Motor vehicle sales represent a sizable portion of consumer spending. At this stage it is not straightforward to assess how important supply constraints are in the overall economic picture, but from this data it is clear that supply bottlenecks are real.
+
+Interestingly, while all automakers seem to suffer, a look at detailed data seems to suggest that notably light truck sales are driving the decline. Given the importance of trucks for U.S. car makers, they are among the hardest hit.
+
+
+
+
+```{r Car Sales Details, echo=FALSE}
+
+    par(mfrow=c(1,2))
+    Chart.DoublePanel(series1 = "US.Auto.LightAutos", series2 = "US.Auto.LightTrucks", periods = 25)
+    Chart.DoublePanel(series1 = "US.Auto.AutosDomestic", series2 = "US.Auto.AutosForeign", periods = 25)
+    
+    par(mfrow=c(1,1))
+
+```
+

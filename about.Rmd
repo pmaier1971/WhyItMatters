@@ -1,5 +1,5 @@
 ---
-title: "About Me
+title: "About Me"
 description: |
   Why this blog
 ---
@@ -8,4 +8,4 @@ description: |
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Dad. Passionate economist. Intrigued by changes. Worked for several central banks, and cares deeply about growth, inflation and interest rates. 
+Dad. Passionate economist. Intrigued by current developments. Worked for several central banks, and cares deeply about growth, inflation and interest rates. 

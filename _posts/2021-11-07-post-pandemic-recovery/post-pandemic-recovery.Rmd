@@ -1,7 +1,7 @@
 ---
-title: "Inflation"
-description: |
-  What's the Issue With Inflation?
+title: "Post-Pandemic Expansion: How Is It Different?"
+description: 
+  Comparing The Current Recovery to Past Expansions
 author:
   - name: Philipp Maier
     url: https://twitter.com/EconomicsShiny
@@ -336,93 +336,122 @@ Chart.InflationOverview <- function(series,tweet = FALSE, tweet.text = "") {
 }
 
 
+misc.GDPExpansionPlot <- function( series ){
+  
+    x = misc.FREDdowload(series = series)
+    
+    NBER.Recessions <- as.Date(as.yearqtr(as.Date(as.character(t(nberDates()[,1])), format="%Y%m%d")))
+    NBER.Recessions <- NBER.Recessions[year(NBER.Recessions) > 1958]
+    
+    x <- data.frame( x, StartExpansion = 0)
+    
+    idx.Expansion                   <- as.Date(rownames(x)) %in% (NBER.Recessions %m-% months(3))
+    x$StartExpansion[idx.Expansion] <- 1
+    x$StartExpansion                <- cumsum(x$StartExpansion)
+    
+    if (series == "US.Payroll") col.plot = brewer.pal((max(x$StartExpansion)+1), "Paired") else col.plot = c( brewer.pal((max(x$StartExpansion)+1), "Paired"), "black")
+    type.plot    <- c(rep(1,max(x$StartExpansion)),2,2)
+    width.plot   <- c(rep(2,max(x$StartExpansion)),5,1)
+    legend.plot  <- character()
+    
+    # Find min and max values for the plot
+    plot.ylim.min <- 100
+    plot.ylim.max <- 100
+    for (idx.plot in 1:max(x$StartExpansion)) {
+      tmp.plot <- x[x$StartExpansion == idx.plot,]
+      tmp.plot[,1] <- 100 * ( tmp.plot[,1] / tmp.plot[1,1] )
+      if (min(tmp.plot[,1], na.rm=TRUE) < plot.ylim.min ) plot.ylim.min <- min(tmp.plot[,1], na.rm=TRUE)
+      if (max(tmp.plot[,1], na.rm=TRUE) > plot.ylim.max ) plot.ylim.max <- max(tmp.plot[,1], na.rm=TRUE)
+    }
+    
+    if (series == "US.Payroll") {
+      xlim.plot  <- c(1, 120)
+      xlim.label = "Months Since Pre-Recession Peak (source: FRED, own calculations)"
+    } else { 
+      xlim.plot  <- c(1, 40) 
+      xlim.label = "Quarters Since Pre-Recession Peak (source: FRED, own calculations)"
+      }
+    
+    ylim.plot    <- c(plot.ylim.min, plot.ylim.max)
+    
+    tmp.plot <- x[x$StartExpansion == 1,]
+    
+    legend.plot  <- c(legend.plot, format(as.Date(rownames(tmp.plot)), format = "%B %Y")[2])
+    tmp.plot[,1] <- 100 * ( tmp.plot[,1] / as.numeric(tmp.plot[1,1] ))
+    
+    plot(zoo(tmp.plot[,1]), type="l", lwd=2, col=col.plot[1], lty=type.plot[1], cex.main = .8,
+         main=paste0("Comparing Recoveries: \n", Data.Description[Data.Description$Mnemonic == series,3]), 
+         ylab="Cumulative Growth (in %) Since Recession", xlab=xlim.label,
+         ylim=ylim.plot,
+         xlim=xlim.plot,
+    )
+    
+    for (idx.plot in 2:max(x$StartExpansion)) {
+      tmp.plot <- x[x$StartExpansion == idx.plot,]
+      
+      legend.plot <- c(legend.plot, format(as.Date(rownames(tmp.plot)), format = "%B %Y")[2])
+      tmp.plot[,1] <- 100 * ( tmp.plot[,1] / as.numeric(tmp.plot[1,1] ))
+      lines(zoo(tmp.plot[,1]), lwd=width.plot, col=col.plot[idx.plot], lty=type.plot[idx.plot-3])
+    }
+    
+    
+    points( nrow(tmp.plot),      tail(tmp.plot,1)[1], col = "black", pch = 19, lwd = 3)
+    if (series == "US.GDP.Real" ) text(   nrow(tmp.plot),  1.2*tail(tmp.plot,1)[1], paste0("After ", nrow(tmp.plot), " Quarters, the Latest Obs. Stands at \n", round(tail(tmp.plot,1)[1],1), "% of the Pre-Recession Peak"), font = 2)
+    if (series == "US.Payroll" ) text(   nrow(tmp.plot),  1.2*tail(tmp.plot,1)[1], paste0("After ", nrow(tmp.plot), " Months, the Latest Obs. Stands at \n", round(tail(tmp.plot,1)[1],1), "% of the Pre-Recession Peak"), font = 2)
+    
+    
+    abline(h=100, col="black", lty=3)
+    grid()
+    
+    if (!(series == "US.Payroll")) {
+      plot.trend <- 100*(1.03^(1/4))^seq(0, 40)
+      lines(plot.trend, lty=3, lwd=3, col=last(col.plot)) 
+      legend.plot <- c(legend.plot, "3% Trendline")
+    }
+    
+    legend("topleft", legend.plot, fill=col.plot, cex=0.75, bty = "n")
+    legend("bottomright", "Data: St. Louis FRED", cex=.5)
+  
+}
+
 
 ```
 
+# Backdrop
 
-# Background
+Every recession is different, but two exceptional ones were the 2008/09 financial crisis and the 2020 COVID pandemic. Both recessions were more severe than any other post-WW II recessions.
 
-Prices change all the time. Why do we care so much about inflation? Are all price changes created equal? And are all equally concerning?
+How does the post-recession recovery compare to history? To answer this, we index key economic indicators to their pre-recession peak, and trace their evolution through time. 
 
-First up - let's define what inflation is, and the differences are between *relative* price changes and *changes in the price level*.
+# Analysis 
 
-_Inflation_ or a change in the price level can be defined as "a general progressive increase in prices of goods and services in an economy" (https://en.wikipedia.org/wiki/Inflation). This erodes the value of cash, as one is able to buy less goods and services with existing money. Inflation is typically measured by tracking the costs to purchase a defined basked of goods over time.
+Let's look at GDP first, the most comprehensive measure of economi activity. The chart below shows
 
-A _change in relative prices_ means that the price for good A goes up, while the price for good B goes down. Even if the overall price level - i.e. the weighted average paid for both good - does not change, relative price change make good A more or less expensive, relative to good B. Relative price changes happen all the time - e.g. the cost of computers has fallen dramatically over time, while rents or the cost of education has risen.
-
-Relative price changes are common, but central banks are concerned about increases in the general price level, because it erodes the purchasing power of consumers and makes it more difficult to plan ahead. Developments can become concerning once broad-based price increases translate into changes in expected inflation.
-
-So, let's see how the economy was doing at the time this post was written.
-
-# Analysis: Where do we currently stand?
-
-The following chart shows the evolution of inflation (specifically: headline inflation, or a broad consumer price index) since 1997. Shaded areas indicate recessions. Two elements stand out:
-
-* First, during recessions, headline inflation tend to fall. In part, this is because the most volatile parts of the consumer basket sees sharp declines, and we would expect an inflation measure excluding components like food or energy to be more stable. 
-
-* Second, inflation is currently at the highest level in over 20 years.
-
-```{r HeadlineInflation, echo=FALSE}
+* the unprecedented depth of the economic contraction, and
+* the swift initial rebound, as economic activity restarted,
+* the slower expansion as the pandemic continued to linger
 
 
-Chart.Single(series = "US.CPI.Headline.mm.yy", 
-             period = 25,
-             tweet = ( as.Date( as.character(tail( fredr_release_dates(release_id = 10L) ,1)[,2]) ) == Sys.Date() ),  
-             tweet.text = paste0("Inflation running at ", 
-                                 round( tail(US.CPI.Headline.mm.yy,1), 2),
-                                 "% y/y, ",
-                                 ifelse( (as.numeric(tail(US.CPI.Headline.mm.yy,1)) - as.numeric(tail(US.CPI.Headline.mm.yy,2)[1]) > 0 ),
-                                         "up ", "down "),
-                                 round( as.numeric(tail(US.CPI.Headline.mm.yy,1)) - as.numeric(tail(US.CPI.Headline.mm.yy,2)[1]), 2),
-                                 "p.p. from last month. FED target is 2%. #rstats")
-)
+```{r GDP Expansion Plot, echo=FALSE}
 
-```
-
-Let's dive deeper. The following charts break down changes in individual inflation components. Not surprisingly, during past recessions core inflation fell less than headline inflation, and the current increase is less pronouced (first chart, top-left panel).
-
-
-```{r Inflation Components, echo=FALSE}
-
-Chart.Four(series1 = "US.CPI.Core.mm.yy", 
-           series2 = "US.CPI.FoodBeverages.mm.yy",
-           series3 = "US.CPI.Housing.mm.yy", 
-           series4 = "US.CPI.Apparel.mm.yy", 
-           periods = 25,
-           tweet = ( as.Date( as.character(tail( fredr_release_dates(release_id = 10L) ,1)[,2]) ) == Sys.Date() ), 
-           tweet.text = "#CPI Update: Details behind the topline number (source: FRED) #Inflation #rstats")
-
-
-Chart.Four(series1 = "US.CPI.Medical.mm.yy", 
-           series2 = "US.CPI.Recreation.mm.yy",
-           series3 = "US.CPI.Education.mm.yy",
-           series4 = "US.CPI.Other.mm.yy",
-           periods = 25,
-           tweet = ( as.Date( as.character(tail( fredr_release_dates(release_id = 10L) ,1)[,2]) ) == Sys.Date() ), 
-           tweet.text = "#CPI Update: Details behind the topline number (source: FRED) #Inflation #rstats")
-
+  misc.GDPExpansionPlot(series = "US.GDP.Real")
 
 ```
 
 # Why Does It Matter?
 
-Central banks are less likely to respond to relative price changes than to broad-based changes in inflation. Let's check: How broad-based is the increase in inflation? 
+The panels below show the key GDP components. While private consumption is roughly on par with other recoveries, government spending seems a little slower. Overall, given the depths of the recession, the recovery is proceeding remarkably swift so far.
 
-As the last chart shows, relative to pre-pandemic times, most key components show rising prices. While it's too early for the final verdict, these charts support the notion that the current increase in inflation is fairly broad-based, and central banks will need to monitor it carefully.
 
-```{r Inflation Summary, echo=FALSE}
 
-Chart.InflationOverview(series = c( "US.CPI.Headline.mm.yy","US.CPI.FoodBeverages.mm.yy", "US.CPI.Housing.mm.yy","US.CPI.Apparel.mm.yy", 
-                                    "US.CPI.Medical.mm.yy", "US.CPI.Recreation.mm.yy", "US.CPI.Education.mm.yy"),
-                        tweet = ( as.Date( as.character(tail( fredr_release_dates(release_id = 10L) ,1)[,2]) ) == Sys.Date() ), 
-                        tweet.text = "How broad based is the increase in #Inflation? Comparing  today to pre-pandemic shows increases in almost all major #CPI #Components #rstats")
+```{r Expansion Details, echo=FALSE}
 
+  par(mfrow=c(2,2))
+  misc.GDPExpansionPlot(series = "US.GDP.PCE")
+  misc.GDPExpansionPlot(series = "US.GDP.FinalSales")
+  misc.GDPExpansionPlot(series = "US.GDP.Investment")
+  misc.GDPExpansionPlot(series = "US.GDP.Government")
+  par(mfrow=c(1,1))
 
 ```
-
-Updates to these charts will be posted on Twitter as new data becomes available.
-
-
-Note: This post was created with Distill. Learn more about using Distill at <https://rstudio.github.io/distill>.
-
 

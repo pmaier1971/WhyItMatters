@@ -17,6 +17,40 @@
     "input_file": {}
   },
   {
+    "path": "posts/2021-11-07-motor-vehicle-sales-supply-side-disruptions/",
+    "title": "Motor Vehicle Sales: Signs of Supply Side Disruptions?",
+    "description": "Let's parse the latest data on motor vehicle sales",
+    "author": [
+      {
+        "name": "Philipp Maier",
+        "url": "https://twitter.com/EconomicsShiny"
+      }
+    ],
+    "date": "2021-11-07",
+    "categories": [],
+    "contents": "\nBackdrop\nDuring the pandemic, auto sales fell off a cliff, but recovered swiftly. The most recent data shows, however, that car sales are slumping again. Why?\nSudden changes in auto sales can be demand or supply driven.\nIn normal circumstances, a sudden decline in auto sales leads to a corresponding increase in auto inventory\nIf the decline is supply driven, a decline in auto sales will be accompanied by a decline in inventories, as dealers sell of remaining stock to meet demand.\nLet’s take a look at the data.\n\n\n\nPredictably, during the pandemic, car sales dropped, accompanied by a spike in inventory. This suggests that the decline was demand-driven. More recently, however, the very low inventory suggests that car sales are supply-constrained.\nWhy Does It Matter?\nMotor vehicle sales represent a sizable portion of consumer spending. At this stage it is not straightforward to assess how important supply constraints are in the overall economic picture, but from this data it is clear that supply bottlenecks are real.\nInterestingly, while all automakers seem to suffer, a look at detailed data seems to suggest that notably light truck sales are driving the decline. Given the importance of trucks for U.S. car makers, they are among the hardest hit.\n\n\n\n\n\n\n",
+    "preview": "posts/2021-11-07-motor-vehicle-sales-supply-side-disruptions/motor-vehicle-sales-supply-side-disruptions_files/figure-html5/Car Sales Details-1.png",
+    "last_modified": "2021-11-07T15:54:59-05:00",
+    "input_file": "motor-vehicle-sales-supply-side-disruptions.knit.md"
+  },
+  {
+    "path": "posts/2021-11-07-post-pandemic-recovery/",
+    "title": "Post-Pandemic Expansion: How Is It Different?",
+    "description": "Comparing The Current Recovery to Past Expansions",
+    "author": [
+      {
+        "name": "Philipp Maier",
+        "url": "https://twitter.com/EconomicsShiny"
+      }
+    ],
+    "date": "2021-11-07",
+    "categories": [],
+    "contents": "\nBackdrop\nEvery recession is different, but two exceptional ones were the 2008/09 financial crisis and the 2020 COVID pandemic. Both recessions were more severe than any other post-WW II recessions.\nHow does the post-recession recovery compare to history? To answer this, we index key economic indicators to their pre-recession peak, and trace their evolution through time.\nAnalysis\nLet’s look at GDP first, the most comprehensive measure of economi activity. The chart below shows\nthe unprecedented depth of the economic contraction, and\nthe swift initial rebound, as economic activity restarted,\nthe slower expansion as the pandemic continued to linger\n\n\n\nWhy Does It Matter?\nThe panels below show the key GDP components. While private consumption is roughly on par with other recoveries, government spending seems a little slower. Overall, given the depths of the recession, the recovery is proceeding remarkably swift so far.\n\n\n\n\n\n\n",
+    "preview": "posts/2021-11-07-post-pandemic-recovery/post-pandemic-recovery_files/figure-html5/GDP Expansion Plot-1.png",
+    "last_modified": "2021-11-07T16:01:18-05:00",
+    "input_file": "post-pandemic-recovery.knit.md"
+  },
+  {
     "path": "posts/welcome/",
     "title": "Welcome to Economic Tidbits: Why It Matters",
     "description": "Economic Tidbits, or: Why It Matters. \n\nBackground information on why we post what we post on https://twitter.com/EconomicsShiny",
@@ -28,9 +62,9 @@
     ],
     "date": "2021-11-06",
     "categories": [],
-    "contents": "\nLots of information about economics is out there. Here we explain what we’re focused on, and why. Updated tweets with the latest economic data can then be found here:\nhttps://twitter.com/EconomicsShiny\n\n\n\n",
+    "contents": "\nEconomics is a complex topic, and everyone has their own favorite metric or indicator. In this blog we explain what we’re focused on, and why. Not saying that this is the only way to think about economics, or that this is the right way, but rather outlining why we look at what we’re looking at.\nUpdated tweets with the latest economic data can then be found here:\nhttps://twitter.com/EconomicsShiny\n\n\n\n",
     "preview": {},
-    "last_modified": "2021-11-07T12:03:13-05:00",
+    "last_modified": "2021-11-07T12:40:51-05:00",
     "input_file": {}
   }
 ]
