@@ -1,5 +1,22 @@
 [
   {
+    "path": "posts/2021-11-07-inflation/",
+    "title": "Inflation",
+    "description": "Why Do We Care About Inflation?",
+    "author": [
+      {
+        "name": "Philipp Maier",
+        "url": "https://twitter.com/EconomicsShiny"
+      }
+    ],
+    "date": "2021-11-07",
+    "categories": [],
+    "contents": "\nDistill is a publication format for scientific and technical writing, native to the web.\nLearn more about using Distill at https://rstudio.github.io/distill.\n\n\n\n",
+    "preview": {},
+    "last_modified": "2021-11-07T11:14:17-05:00",
+    "input_file": "inflation.knit.md"
+  },
+  {
     "path": "posts/welcome/",
     "title": "Welcome to Economic Tidbits: Why It Matters",
     "description": "Welcome to our new blog, Economic Tidbits: Why It Matters. We hope you enjoy \nreading what we have to say!",
