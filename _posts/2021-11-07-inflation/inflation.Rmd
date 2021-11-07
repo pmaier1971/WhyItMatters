@@ -402,6 +402,7 @@ Chart.InflationOverview(series = c( "US.CPI.Headline.mm.yy","US.CPI.FoodBeverage
 
 
 
-Learn more about using Distill at <https://rstudio.github.io/distill>.
+
+Note: This post was created with Distill. Learn more about using Distill at <https://rstudio.github.io/distill>.
 
 

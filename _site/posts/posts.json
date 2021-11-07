@@ -11,26 +11,26 @@
     ],
     "date": "2021-11-07",
     "categories": [],
-    "contents": "\nLet’s review why we care about inflation - and what the differences are between relative price changes and changes in the price level.\nChanges in the price level\nThe following plot shows headline inflation.\n\n\n\nThe following charts break down changes in individual inflation components:\n\n\n\nHow broad -ased is the increase in inflation? Relative to pre-pandemic times, it looks as if most key components show rising prices.\n\n\n\nLearn more about using Distill at https://rstudio.github.io/distill.\n\n\n\n",
+    "contents": "\nLet’s review why we care about inflation - and what the differences are between relative price changes and changes in the price level.\nChanges in the price level\nThe following plot shows headline inflation.\n\n\n\nThe following charts break down changes in individual inflation components:\n\n\n\nHow broad -ased is the increase in inflation? Relative to pre-pandemic times, it looks as if most key components show rising prices.\n\n\n\nNote: This post was created with Distill. Learn more about using Distill at https://rstudio.github.io/distill.\n\n\n\n",
     "preview": "posts/2021-11-07-inflation/inflation_files/figure-html5/HeadlineInflation-1.png",
-    "last_modified": "2021-11-07T12:00:07-05:00",
-    "input_file": "inflation.knit.md"
+    "last_modified": "2021-11-07T12:05:11-05:00",
+    "input_file": {}
   },
   {
     "path": "posts/welcome/",
     "title": "Welcome to Economic Tidbits: Why It Matters",
-    "description": "Welcome to our new blog, Economic Tidbits: Why It Matters. We hope you enjoy \nreading what we have to say!",
+    "description": "Economic Tidbits, or: Why It Matters. \n\nBackground information on why we post what we post on https://twitter.com/EconomicsShiny",
     "author": [
       {
-        "name": "Nora Jones",
-        "url": "https://example.com/norajones"
+        "name": "Philipp Maier",
+        "url": "https://twitter.com/EconomicsShiny"
       }
     ],
     "date": "2021-11-06",
     "categories": [],
-    "contents": "\n\n\n\n",
+    "contents": "\nLots of information about economics is out there. Here we explain what we’re focused on, and why. Updated tweets with the latest economic data can then be found here:\nhttps://twitter.com/EconomicsShiny\n\n\n\n",
     "preview": {},
-    "last_modified": "2021-11-06T23:25:38-04:00",
+    "last_modified": "2021-11-07T12:03:13-05:00",
     "input_file": {}
   }
 ]

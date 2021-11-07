@@ -8,4 +8,4 @@ description: |
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Dad. Passionate economist. Worked for several central banks, and cares about inflation and interest rates. 
+Dad. Passionate economist. Worked for several central banks, and cares deeply about growth, inflation and interest rates. 
