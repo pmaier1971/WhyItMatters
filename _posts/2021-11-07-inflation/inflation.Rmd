@@ -14,8 +14,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-
-#!/usr/bin/R
+knitr::opts_chunk$set(fig.width=12, fig.height=8) 
 
 pkgTest <- function(x)
 {
@@ -40,24 +39,10 @@ pkgTest("rtweet")
 pkgTest("httr")
 pkgTest("tis")
 pkgTest("tm")
-pkgTest("gmailr")
-
-setwd("~/Documents/R/")
-
-# Test that FRED is online ####
-test.online        <- try(getSymbols("GDPC1",src='FRED'))
-
-if ((inherits(test.online, "try-error"))) {
-  stop("\n\n\n----------\n Not online \n----------\n\n")
-}
-
-rm(list=ls())
 
 ## Credentials
 
-FRED_API_KEY <- ""
-
-source("Credentials.R")   # file where credentials are stored
+FRED_API_KEY <- "4a91875abccae0ee89966c96d8760b60"
 fredr_set_key(FRED_API_KEY)
 
 
@@ -83,8 +68,12 @@ Data.US <- c("US.GDP.Real"="GDPC1",
              "US.IP"= "INDPRO", 
              "US.Payroll"="PAYEMS",
              "US.IP.CapacityUtilization" = "TCU",
-             "US.Unemployment"="UNRATE", "US.Unemployment.U1" = "U1RATE", "US.Unemployment.U6" = "U6RATE", "US.Unemployment.U2" = "U2RATE",
-             "US.Unemployment.PartTimeEconomicReasons" = "LNS12032194", "US.Unemployment.PartTimeNonEconomicReasons" = "LNS12032200",
+             "US.Unemployment"="UNRATE", 
+             "US.Unemployment.U1" = "U1RATE", 
+             "US.Unemployment.U6" = "U6RATE", 
+             "US.Unemployment.U2" = "U2RATE",
+             "US.Unemployment.PartTimeEconomicReasons" = "LNS12032194", 
+             "US.Unemployment.PartTimeNonEconomicReasons" = "LNS12032200",
              "US.Unemployment.MarginallyAttached" = "LNU05026642",
              "US.Unemployment.ParticipationRate"="CIVPART",
              "US.Unemployment.EmploymentToPopulation"="EMRATIO",
@@ -219,7 +208,6 @@ for ( idx in 1:nrow(Data.Description) ) {
 misc.FREDdowload <- function(series) {
   
   if (!(exists(series))) {
-    cat("\n       Downloading", series)
     x = fredr( series_id = Data.Description[Data.Description$Mnemonic == series,2] )
     x = zoo(x$value, as.Date(x$date))
     if ((series == "US.H8.FedFundsSold") || (series == "US.H8.TradingAssets")) x = x / 1000
@@ -227,11 +215,7 @@ misc.FREDdowload <- function(series) {
     if ( substr(series, (nchar(series)-5), nchar(series)) == ".qq.yy") x <- 100*log(x / stats::lag(x, -4))
     if ( substr(series, (nchar(series)-2), nchar(series)) == ".qq") x <- 100*log(x / stats::lag(x, -1))
     
-  } else {
-    
-    cat(series, "exists \n")
-    assign("x", get(series))
-  }
+  } else assign("x", get(series))
   
   assign(series, x, envir = .GlobalEnv)
   return(x)
@@ -294,7 +278,6 @@ Chart.Single <- function(series, periods, tweet = FALSE, tweet.text = ""){
   legend("bottomleft", "Data: St. Louis FRED", cex=.5)
   text(index(tail(x,round(.15*length(x)))[1]), 1.1*tail(x,1), paste("Latest obs.\n", round(tail(x,1),2)), font = 2)
   
-  
   grid()
 }
 
@@ -354,6 +337,18 @@ Chart.InflationOverview <- function(series,tweet = FALSE, tweet.text = "") {
 
 
 
+```
+
+
+Let's review why we care about inflation - and what the differences are between *relative* price changes and *changes in the price level*.
+
+# Changes in the price level
+
+The following plot shows headline inflation.
+
+
+```{r HeadlineInflation, echo=FALSE}
+
 
 Chart.Single(series = "US.CPI.Headline.mm.yy", 
              period = 25,
@@ -366,6 +361,12 @@ Chart.Single(series = "US.CPI.Headline.mm.yy",
                                  round( as.numeric(tail(US.CPI.Headline.mm.yy,1)) - as.numeric(tail(US.CPI.Headline.mm.yy,2)[1]), 2),
                                  "p.p. from last month. FED target is 2%. #rstats")
 )
+
+```
+
+The following charts break down changes in individual inflation components:
+
+```{r Inflation Components, echo=FALSE}
 
 Chart.Four(series1 = "US.CPI.Core.mm.yy", 
            series2 = "US.CPI.FoodBeverages.mm.yy",
@@ -385,16 +386,21 @@ Chart.Four(series1 = "US.CPI.Medical.mm.yy",
            tweet.text = "#CPI Update: Details behind the topline number (source: FRED) #Inflation #rstats")
 
 
+```
+
+How broad -ased is the increase in inflation? Relative to pre-pandemic times, it looks as if most key components show rising prices. 
+
+```{r Inflation Summary, echo=FALSE}
+
 Chart.InflationOverview(series = c( "US.CPI.Headline.mm.yy","US.CPI.FoodBeverages.mm.yy", "US.CPI.Housing.mm.yy","US.CPI.Apparel.mm.yy", 
                                     "US.CPI.Medical.mm.yy", "US.CPI.Recreation.mm.yy", "US.CPI.Education.mm.yy"),
                         tweet = ( as.Date( as.character(tail( fredr_release_dates(release_id = 10L) ,1)[,2]) ) == Sys.Date() ), 
                         tweet.text = "How broad based is the increase in #Inflation? Comparing  today to pre-pandemic shows increases in almost all major #CPI #Components #rstats")
 
 
-
 ```
 
-Distill is a publication format for scientific and technical writing, native to the web.
+
 
 Learn more about using Distill at <https://rstudio.github.io/distill>.
 

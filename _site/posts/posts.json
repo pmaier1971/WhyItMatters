@@ -11,9 +11,9 @@
     ],
     "date": "2021-11-07",
     "categories": [],
-    "contents": "\nDistill is a publication format for scientific and technical writing, native to the web.\nLearn more about using Distill at https://rstudio.github.io/distill.\n\n\n\n",
-    "preview": {},
-    "last_modified": "2021-11-07T11:14:17-05:00",
+    "contents": "\nLet’s review why we care about inflation - and what the differences are between relative price changes and changes in the price level.\nChanges in the price level\nThe following plot shows headline inflation.\n\n\n\nThe following charts break down changes in individual inflation components:\n\n\n\nHow broad -ased is the increase in inflation? Relative to pre-pandemic times, it looks as if most key components show rising prices.\n\n\n\nLearn more about using Distill at https://rstudio.github.io/distill.\n\n\n\n",
+    "preview": "posts/2021-11-07-inflation/inflation_files/figure-html5/HeadlineInflation-1.png",
+    "last_modified": "2021-11-07T12:00:07-05:00",
     "input_file": "inflation.knit.md"
   },
   {

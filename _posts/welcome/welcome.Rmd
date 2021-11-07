@@ -1,13 +1,14 @@
 ---
 title: "Welcome to Economic Tidbits: Why It Matters"
 description: |
-  Welcome to our new blog, Economic Tidbits: Why It Matters. We hope you enjoy 
-  reading what we have to say!
+  Economic Tidbits, or: Why It Matters. 
+  
+  Background information on why we post what we post on https://twitter.com/EconomicsShiny
+  
 author:
-  - name: Nora Jones 
-    url: https://example.com/norajones
-    affiliation: Spacely Sprockets
-    affiliation_url: https://example.com/spacelysprokets
+  - name: Philipp Maier
+    url: https://twitter.com/EconomicsShiny
+    
 date: 11-06-2021
 output:
   distill::distill_article:
@@ -22,5 +23,8 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
+Lots of information about economics is out there. Here we explain what we're focused on, and why. Updated tweets with the latest economic data can then be found here:
+
+https://twitter.com/EconomicsShiny
 
 
