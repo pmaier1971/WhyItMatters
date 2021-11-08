@@ -51,6 +51,23 @@
     "input_file": {}
   },
   {
+    "path": "posts/2021-11-07-shifting-consumption-patterns/",
+    "title": "Shifting Consumption Patterns",
+    "description": "With Travel Restricted, Consumers Continue Their Serious Retail Therapy. What Does It Mean for the Economy?",
+    "author": [
+      {
+        "name": "Philipp Maier",
+        "url": "https://twitter.com/EconomicsShiny"
+      }
+    ],
+    "date": "2021-11-07",
+    "categories": [],
+    "contents": "\nBackdrop\nThe pandemic, and the closure of cross-border travel, resulted in substantial disruptions for the hospitality and travel industry. Partially as a result of government support, consumption remained high, and consumers spent money on their homes - i.e. on goods like furniture, sporting goods, or building materials.\nThis causes massive surges in demand for these goods, and retailers had difficulties meeting unexpected demands. How long before consumption spending returns to more normal levels?\nThe chart below illustrates just how disruptive the pandemic was.\n\n\n\nAnalysis\nLet’s dig below the headline number. The chart below shows key components from the monthly Advance Retail Sales Report, released monthly by the U.S. Census Bureau (https://fred.stlouisfed.org/release/tables?rid=9&eid=201241#snid=201244).\nThe second chart shows the impact of the pandemic even more clearly. Bought some exercise equipment lately? You’re not alone.\n\n\n\nUpdates to these charts will be posted on Twitter as new data becomes available.\n\n\n\n",
+    "preview": "posts/2021-11-07-shifting-consumption-patterns/shifting-consumption-patterns_files/figure-html5/Backdrop-1.png",
+    "last_modified": "2021-11-07T22:13:17-05:00",
+    "input_file": "shifting-consumption-patterns.knit.md"
+  },
+  {
     "path": "posts/welcome/",
     "title": "Welcome to Economics on Twitter: Why It Matters",
     "description": "Economics on Twitter, or: Why It Matters. \n\nBackground information on why we post what we post on https://twitter.com/EconomicsShiny",

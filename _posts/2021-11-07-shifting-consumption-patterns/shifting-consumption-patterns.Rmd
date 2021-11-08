@@ -1,0 +1,367 @@
+---
+title: "Shifting Consumption Patterns"
+description: 
+  With Travel Restricted, Consumers Continue Their Serious Retail Therapy. What Does It Mean for the Economy?
+author:
+  - name: Philipp Maier
+    url: https://twitter.com/EconomicsShiny
+date: 2021-11-07
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+knitr::opts_chunk$set(fig.width=15, fig.height=10) 
+
+pkgTest <- function(x)
+{
+  if (!require(x,character.only = TRUE))
+  {
+    install.packages(x,dep=TRUE)
+    if(!require(x,character.only = TRUE)) stop("Package not found")
+  }
+}
+
+pkgTest("fredr")
+pkgTest("RColorBrewer")
+pkgTest("reshape")
+pkgTest("quantmod")
+pkgTest("zoo")
+pkgTest("dplyr")
+pkgTest("forecast")
+pkgTest("lubridate")
+pkgTest("httr")
+pkgTest("jsonlite")
+pkgTest("rtweet")
+pkgTest("httr")
+pkgTest("tis")
+pkgTest("tm")
+
+## Credentials
+
+FRED_API_KEY <- "4a91875abccae0ee89966c96d8760b60"
+fredr_set_key(FRED_API_KEY)
+
+
+
+# Data Download
+
+Data.US <- c("US.Activity.RetailSales" = "RSAFS",
+             "US.Activity.RetailSalesExAuto" = "RSFSXMV",
+             "US.Activity.RetailSalesMotorvehicles" = "RSMVPD",
+             "US.Activity.RetailSalesElectronics" = "RSEAS",
+             "US.Activity.RetailSalesFoodDBeverageRetail" = "RSDBS",
+             "US.Activity.RetailSalesHealth" = "RSHPCS",
+             "US.Activity.RetailSalesGasoline" = "RSGASS",
+             "US.Activity.RetailSalesGeneralMerchandise" = "RSGMS",
+             "US.Activity.RetailSalesMisc" = "RSMSR",
+             "US.Activity.RetailSalesNonStore" = "RSNSR",
+             "US.Activity.RetailSalesSportsGoods" = "RSSGHBMS",
+             "US.Activity.RetailSalesFurniture" = "RSFHFS",
+             "US.Activity.RetailSalesBuildingMaterials" = "RSBMGESD",
+             "US.Activity.RetailSalesClothing" = "RSCCAS",
+             "US.Activity.RetailSalesFoodDrinking" = "RSFSDP"
+)
+
+
+Data.Description <- data.frame( 
+  Mnemonic = names(Data.US), 
+  Code = Data.US,
+  Description = "", 
+  Frequeny = "",
+  Units = "",
+  LastUpdate = ""
+  )
+  
+for ( idx in 1:nrow(Data.Description) ) {
+  cat(paste("  - ", Data.Description[idx,1], "\n"))
+  x = fredr_series(series_id = Data.Description[idx,2])
+  Data.Description[idx, 3 ] = x$title
+  Data.Description[idx, 4 ] = x$frequency
+  Data.Description[idx, 5] = x$units
+  Data.Description[idx, 6] = x$last_updated
+}
+
+
+## Misc. functions
+
+misc.FREDdowload <- function(series) {
+  
+  if (!(exists(series))) {
+    x = fredr( series_id = Data.Description[Data.Description$Mnemonic == series,2] )
+    x = zoo(x$value, as.Date(x$date))
+    if ((series == "US.H8.FedFundsSold") || (series == "US.H8.TradingAssets")) x = x / 1000
+    if ( substr(series, (nchar(series)-5), nchar(series)) == ".mm.yy") x <- 100*log(x / stats::lag(x, -12))
+    if ( substr(series, (nchar(series)-5), nchar(series)) == ".qq.yy") x <- 100*log(x / stats::lag(x, -4))
+    if ( substr(series, (nchar(series)-2), nchar(series)) == ".qq") x <- 100*log(x / stats::lag(x, -1))
+    
+  } else {
+    
+    assign("x", get(series))
+  }
+  
+  assign(series, x, envir = .GlobalEnv)
+  return(x)
+}
+
+
+misc.NBER.Recessions <- function(){
+  NBER.Recessions <- as.Date(as.character(t(nberDates())), format="%Y%m%d")
+  Limits <- par('usr')
+  for (idx in seq(1, length(NBER.Recessions), 2) ) {
+    rect(NBER.Recessions[idx], Limits[3], NBER.Recessions[idx+1], Limits[4], col="#0000FF19", lty=0)
+  }
+}
+
+
+
+Chart.Panel <- function(x, series) {
+  
+  chart.col   = brewer.pal(6, "Paired")[6]
+  chart.ylim  = c(0.9*range(x, na.rm=TRUE)[1], 1.1*range(x, na.rm=TRUE)[2])
+  chart.title = Data.Description[Data.Description$Mnemonic == series,3]
+  
+  plot(as.zoo(x), main = chart.title, 
+       col = chart.col, 
+       lwd = 3, 
+       ylim = chart.ylim,
+       ylab = Data.Description[grep(series, Data.Description[,1]),5],
+       xlab = paste0("Period: ", year(index(x[1])), " - ", year(index(tail(x[1]))), " (shaded areas indicate U.S. recessions)"))
+  
+  points( index(tail(x, 1)), tail(x,1), col = chart.col, pch = 19, lwd = 5)
+  abline(v = as.Date(paste0(seq( year(index(x[1])), year(Sys.Date()), 1), "-01-01")), lty = 3, lwd = 0.5)
+  misc.NBER.Recessions()
+  
+  text(index(tail(x,round(.15*length(x)))[1]), 1.1*tail(x,1), paste("Latest obs.\n", round(tail(x,1),2)), font = 2)
+  grid()
+  legend("bottomleft", "Data: St. Louis FRED", cex=.5)
+  
+}
+
+
+Chart.Single <- function(series, periods, tweet = FALSE, tweet.text = ""){
+  
+  x = misc.FREDdowload(series = series)
+  x = x[year(index(x))>(year(Sys.Date())-periods)]
+  
+  chart.col   = brewer.pal(6, "Paired")[6]
+  chart.ylim  = c(0.9*range(x, na.rm=TRUE)[1], 1.1*range(x, na.rm=TRUE)[2])
+  chart.title = Data.Description[Data.Description$Mnemonic == series,3]
+  if (nchar(chart.title) > 25) chart.title = gsub(":", ":\n", chart.title)
+  
+  plot(as.zoo(x), main = chart.title, 
+       #ylab = "", 
+       col = chart.col, 
+       lwd = 3, 
+       ylim = chart.ylim,
+       ylab = "Source: FRED, Federal Reserve Bank of St. Louis",
+       xlab = paste0("Period: ", year(index(x[1])), " - ", year(index(tail(x,1))), " (shaded areas indicate U.S. recessions)"))
+  points( index(tail(x, 1)), tail(x,1), col = chart.col, pch = 19, lwd = 5)
+  abline(v = as.Date(paste0(seq( year(index(x[1])), year(Sys.Date()), 1), "-01-01")), lty = 3, lwd = 0.5)
+  misc.NBER.Recessions()
+  legend("bottomleft", "Data: St. Louis FRED", cex=.5)
+  text(index(tail(x,round(.15*length(x)))[1]), 1.1*tail(x,1), paste("Latest obs.\n", round(tail(x,1),2)), font = 2)
+  
+  grid()
+}
+
+
+Chart.Duo <- function(series1, series2, periods, tweet = FALSE, tweet.text = ""){
+  
+    x1 = misc.FREDdowload(series = series1)
+    x2 = misc.FREDdowload(series = series2)
+    
+    x1 = x1[year(index(x1))>(year(Sys.Date())-periods)]
+    x2 = x2[year(index(x2))>(year(Sys.Date())-periods)]
+ 
+    par(mfrow=c(1,2))
+    
+    chart.col   = brewer.pal(6, "Paired")[6]
+    chart.ylim  = c(0.9*range(x1, na.rm=TRUE)[1], 1.1*range(x1, na.rm=TRUE)[2])
+    chart.title = Data.Description[Data.Description$Mnemonic == series1,3]
+    
+    plot(as.zoo(x1), main = chart.title, 
+         col = chart.col, 
+         lwd = 3, 
+         ylim = chart.ylim,
+         #ylab = "Source: FRED, Federal Reserve Bank of St. Louis",
+         ylab = ifelse ( substr(series1, (nchar(series1)-5), nchar(series1)) == ".qq.yy", "Y/Y growth (in %)", Data.Description[grep(series1, Data.Description[,1]),5]),
+         xlab = paste0("Period: ", year(index(x1[1])), " - ", year(index(tail(x1,1))), " (shaded areas indicate U.S. recessions)"))
+    points( index(tail(x1, 1)), tail(x1,1), col = chart.col, pch = 19, lwd = 5)
+    abline(v = as.Date(paste0(seq( year(index(x1[1])), year(Sys.Date()), 1), "-01-01")), lty = 3, lwd = 0.5)
+    misc.NBER.Recessions()
+    
+    text(index(tail(x1,round(.15*length(x1)))[1]), 1.1*tail(x1,1), 
+         ifelse ( substr(series1, (nchar(series1)-5), nchar(series1)) == ".qq.yy", 
+                  paste("Latest obs.\n", round(tail(x1,1),2),"%"),
+                  paste("Latest obs.\n", round(tail(x1,1),2))), font = 2)
+    grid()
+    legend("bottomleft", "Data: St. Louis FRED", cex=.6)
+    
+    chart.col   = brewer.pal(6, "Paired")[6]
+    chart.ylim  = c(0.9*range(x2, na.rm=TRUE)[1], 1.1*range(x2, na.rm=TRUE)[2])
+    chart.title = Data.Description[Data.Description$Mnemonic == series2, 3]
+    
+    plot(as.zoo(x2), main = chart.title, 
+         col = chart.col, 
+         lwd = 3, 
+         ylim = chart.ylim,
+         ylab = ifelse ( substr(series2, (nchar(series2)-5), nchar(series2)) == ".qq.yy", "Y/Y growth (in %)", Data.Description[grep(series2, Data.Description[,1]),5]),
+         xlab = paste0("Period: ", year(index(x2[1])), " - ", year(index(tail(x2,1))), " (shaded areas indicate U.S. recessions)"))
+    points( index(tail(x2, 1)), tail(x2,1), col = chart.col, pch = 19, lwd = 5)
+    abline(v = as.Date(paste0(seq( year(index(x2[1])), year(Sys.Date()), 1), "-01-01")), lty = 3, lwd = 0.5)
+    misc.NBER.Recessions()
+    
+    text(index(tail(x2,round(.15*length(x2)))[1]), 1.1*tail(x2,1), 
+         ifelse ( substr(series2, (nchar(series2)-5), nchar(series2)) == ".qq.yy",
+                  paste("Latest obs.\n", round(tail(x2,1),2),"%"),
+                  paste("Latest obs.\n", round(tail(x2,1),2))), font = 2)
+    grid()
+    legend("bottomleft", "Data: St. Louis FRED", cex=.6)
+    
+    par(mfrow=c(1,1))
+   
+}
+
+
+
+Chart.Four <- function(series1, series2, series3, series4, periods, tweet = FALSE, tweet.text = ""){
+  
+  x1 = misc.FREDdowload(series = series1)
+  x2 = misc.FREDdowload(series = series2)
+  x3 = misc.FREDdowload(series = series3)
+  x4 = misc.FREDdowload(series = series4)
+  
+  x1 = x1[year(index(x1))>(year(Sys.Date())-periods)]
+  x2 = x2[year(index(x2))>(year(Sys.Date())-periods)]
+  x3 = x3[year(index(x3))>(year(Sys.Date())-periods)]
+  x4 = x4[year(index(x4))>(year(Sys.Date())-periods)]
+  
+  par(mfrow=c(2,2))
+  
+  Chart.Panel(x = x1, series = series1)
+  Chart.Panel(x = x2, series = series2)
+  Chart.Panel(x = x3, series = series3)
+  Chart.Panel(x = x4, series = series4)
+
+  par(mfrow=c(1,1))
+}
+
+
+Chart.DoublePanel <- function(series1, series2, periods) {
+  
+  x1 = misc.FREDdowload(series1) 
+  x2 = misc.FREDdowload(series2)
+  
+  plot.data = merge(x1, x2)
+  plot.data = plot.data[year(index(plot.data))>(year(Sys.Date())-periods)]
+  names(plot.data) <- gsub("Motor Vehicle Retail Sales: ", "", c(Data.Description[Data.Description$Mnemonic == series1,3], Data.Description[Data.Description$Mnemonic == series2,3]) )
+  
+  chart.col   = brewer.pal(6, "Paired")[1:2]
+  chart.ylim  = c(0.9*range(plot.data, na.rm=TRUE)[1], 1.1*range(plot.data, na.rm=TRUE)[2])
+  chart.title = "Motor Vehicle Retail Sales" #Data.Description[Data.Description$Mnemonic == series1,3]
+  
+  plot(plot.data[,1], col = chart.col, main = chart.title, type = "n", 
+       ylim = chart.ylim, 
+       ylab = Data.Description[Data.Description$Mnemonic == series1,5], 
+       xlab = "")
+  legend("topleft", names(plot.data), fill = chart.col, bty = "n")
+  
+  for (idx in 1:ncol(plot.data)) {
+    lines(plot.data[,idx], col = chart.col[idx])
+    points( index(tail(plot.data[,idx], 1)), tail(plot.data[,idx],1), col = chart.col[idx], pch = 19, lwd = 5)
+    text(index(tail(plot.data[,idx],round(.15*length(x2)))[1]), 1.1*tail(plot.data[,idx],1), 
+         paste("Latest obs.\n", round(tail(plot.data[,idx],1),2)), font = 2)
+  }
+  misc.NBER.Recessions()
+  
+  grid()
+  legend("bottomleft", "Data: St. Louis FRED", cex=.5)
+  
+}
+
+
+
+```
+
+
+# Backdrop
+
+The pandemic, and the closure of cross-border travel, resulted in substantial disruptions for the hospitality and travel industry. Partially as a result of government support, consumption remained high, and consumers spent money on their homes - i.e. on goods like furniture, sporting goods, or building materials.
+
+This causes massive surges in demand for these goods, and retailers had difficulties meeting unexpected demands. How long before consumption spending returns to more normal levels?
+
+The chart below illustrates just how disruptive the pandemic was.
+
+
+```{r Backdrop }
+
+Chart.Duo(series1="US.Activity.RetailSales", series2="US.Activity.RetailSalesExAuto",
+          periods = 25,
+          tweet = ( as.Date( as.character(tail( fredr_release_dates(release_id = 9L) ,1)[,2]) ) == Sys.Date() ),  
+          tweet.text = "#AdvanceRetailSales: With Travel Restricted, Consumers Continue Their Serious #RetailTherapy #rstats")
+
+```
+
+# Analysis 
+
+Let's dig below the headline number. The chart below shows key components from the monthly Advance Retail Sales Report, released monthly by the U.S. Census Bureau (https://fred.stlouisfed.org/release/tables?rid=9&eid=201241#snid=201244). 
+
+The second chart shows the impact of the pandemic even more clearly. Bought some exercise equipment lately? You're not alone.
+
+
+
+
+```{r Analysis }
+
+
+BankData.Details  <- merge(US.Activity.RetailSalesBuildingMaterials=misc.FREDdowload("US.Activity.RetailSalesBuildingMaterials"),
+                           #US.Activity.RetailSalesMisc=misc.FREDdowload("US.Activity.RetailSalesMisc"),
+                           US.Activity.RetailSalesGeneralMerchandise=misc.FREDdowload("US.Activity.RetailSalesGeneralMerchandise"),
+                           US.Activity.RetailSalesFoodDBeverageRetail=misc.FREDdowload("US.Activity.RetailSalesFoodDBeverageRetail"),
+                           US.Activity.RetailSalesGasoline=misc.FREDdowload("US.Activity.RetailSalesGasoline"),
+                           US.Activity.RetailSalesClothing = misc.FREDdowload("US.Activity.RetailSalesClothing"),
+                           US.Activity.RetailSalesMotorvehicles=misc.FREDdowload("US.Activity.RetailSalesMotorvehicles"),
+                           US.Activity.RetailSalesNonStore=misc.FREDdowload("US.Activity.RetailSalesNonStore"),
+                           US.Activity.RetailSalesFoodDrinking = misc.FREDdowload("US.Activity.RetailSalesFoodDrinking")
+)
+
+BankData.Details  <- BankData.Details[index(BankData.Details) >= as.Date("2019-01-01")] / 1000
+
+plot.col    <- brewer.pal(8, "Paired")
+plot.legend = character()
+for (idx in 1:ncol(BankData.Details)) plot.legend <- c(plot.legend, 
+                                                       gsub("Advance Retail Sales: ", "", 
+                                                            Data.Description[Data.Description$Mnemonic == colnames(BankData.Details)[idx],3]))
+plot.ylim = c(0, 1.25*max(rowSums(BankData.Details)))
+BankDataChart=barplot(BankData.Details, col = plot.col, 
+                      border="NA", 
+                      main = "Advance Retail Sales: Key Components", 
+                      ylab = "Billions of Dollars",
+                      xaxt = "n",
+                      cex.axis = .8, cex.names = .8,
+                      ylim = plot.ylim)
+axis(1, at=BankDataChart,
+     as.yearmon( index(BankData.Details)) , cex.axis = .7)
+legend("topleft", plot.legend, fill = plot.col, cex=0.75, bty = "n")
+legend("bottomleft", "Data: St. Louis FRED", cex=.5)
+
+
+
+Chart.Duo(series1="US.Activity.RetailSalesSportsGoods", series2="US.Activity.RetailSalesFurniture",
+          periods = 25,
+          tweet = ( as.Date( as.character(tail( fredr_release_dates(release_id = 9L) ,1)[,2]) ) == Sys.Date() ),  
+          tweet.text = "Bought a #Peleton During the Pandemic, too? Sales of #SportingGoods Skyrocketed in 2021.
+           (source: FRED) #AdvanceRetailSales #rstats")
+
+
+
+
+```
+
+
+Updates to these charts will be posted on Twitter as new data becomes available.
