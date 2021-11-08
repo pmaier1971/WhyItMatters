@@ -1,7 +1,7 @@
 ---
-title: "Welcome to Economic Tidbits: Why It Matters"
+title: "Welcome to Economics on Twitter: Why It Matters"
 description: |
-  Economic Tidbits, or: Why It Matters. 
+  Economics on Twitter, or: Why It Matters. 
   
   Background information on why we post what we post on https://twitter.com/EconomicsShiny
   

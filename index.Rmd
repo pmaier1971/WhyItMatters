@@ -1,5 +1,5 @@
 ---
-title: "Economic Tidbits: Why It Matters"
+title: "Economics on Twitter: Why It Matters"
 site: distill::distill_website
 listing: posts
 ---

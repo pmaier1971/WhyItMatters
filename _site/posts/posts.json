@@ -52,8 +52,8 @@
   },
   {
     "path": "posts/welcome/",
-    "title": "Welcome to Economic Tidbits: Why It Matters",
-    "description": "Economic Tidbits, or: Why It Matters. \n\nBackground information on why we post what we post on https://twitter.com/EconomicsShiny",
+    "title": "Welcome to Economics on Twitter: Why It Matters",
+    "description": "Economics on Twitter, or: Why It Matters. \n\nBackground information on why we post what we post on https://twitter.com/EconomicsShiny",
     "author": [
       {
         "name": "Philipp Maier",
@@ -62,9 +62,9 @@
     ],
     "date": "2021-11-06",
     "categories": [],
-    "contents": "\n<<<<<<< HEAD\nEconomics is a complex topic, and everyone has their own favorite metric or indicator. In this blog we explain what we’re focused on, and why. Not saying that this is the only way to think about economics, or that this is the right way, but rather outlining why we look at what we’re looking at.\nUpdated tweets with the latest economic data can then be found here:\n=======\nLots of information about economics is out there. Here we explain what we’re focused on, and why. Updated tweets with the latest economic data can then be found here:\n>>>>>>> 19fcf31a50e6b585e081fe49725a3059358b634b\nhttps://twitter.com/EconomicsShiny\n\n\n\n",
+    "contents": "\nEconomics is a complex topic, and everyone has their own favorite metric or indicator. In this blog we explain what we’re focused on, and why. Not saying that this is the only way to think about economics, or that this is the right way, but rather outlining why we look at what we’re looking at.\nUpdated tweets with the latest economic data can then be found here:\nhttps://twitter.com/EconomicsShiny\n\n\n\n",
     "preview": {},
-    "last_modified": "2021-11-07T16:03:53-05:00",
+    "last_modified": "2021-11-07T20:11:08-05:00",
     "input_file": {}
   }
 ]
