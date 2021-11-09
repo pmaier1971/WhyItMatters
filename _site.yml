@@ -2,6 +2,7 @@ name: "WhyItMatters"
 title: "Economic Tidbits: Why It Matters"
 description: |
   Economic Tidbits: Why It Matters
+google_analytics: "G-3DRZK3C1PW"
 output_dir: "_site"
 navbar:
   right:
