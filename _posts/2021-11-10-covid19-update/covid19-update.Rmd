@@ -1,0 +1,105 @@
+---
+title: "COVID19 Update"
+description: 
+  Why We Care About COVID 19 (a lot!)
+author:
+  - name: Philipp Maier
+date: 2021-11-10
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.width=15, fig.height=10) 
+
+library(RColorBrewer)
+library(COVID19)
+library(zoo)
+library(lubridate)
+library(reshape)
+
+```
+
+# Backdrop
+
+The COVID-19 pandemic has severely disrupted the Global Economy. From lockdowns to bottlenecks in logistics, the pandemic has impacted the economic situation. 
+
+# Analysis
+
+We first look at current infection, i.e. the evolution of daily COVID cases - and, given that this series can be very noise, we also plot the 7-day average. Charts below.
+
+```{r analysis}
+
+covid.countries = c("United States", "China", "Japan", "Germany", "United Kingdom", "India", "France")
+covid.cases     = covid19(covid.countries, verbose = FALSE)
+plot.col        = brewer.pal(10, "Paired")
+
+par(mfrow = c(2,3))
+covid.countries = c("United States", "China", "Japan", "Germany", "United Kingdom", "India")
+for (idx in covid.countries) {
+  x = covid.cases[covid.cases$administrative_area_level_1==idx, c("date", "confirmed")]
+  x = zoo(diff(x$confirmed), as.Date(x$date))
+  plot(x, ylab = "Daily Cases (blue) / 7-day average (red)", main = idx, 
+       xlab = "", xaxt = "n", col = plot.col[1], lwd = 3, cex.main = 2.2, cex.axis = 1.4, cex.lab = 1.3)
+  lines(rollmean(x, k=7), col = plot.col[6], lwd = 3)
+  axis(1, floor_date(index(x), 'month'), as.yearmon(floor_date(index(x), 'month')), cex.axis = 1)
+#  legend("topleft", "Data: https://covid19datahub.io", cex=1.2, bty = "n")
+  grid()
+}
+par(mfrow = c(1,1))
+
+```
+
+
+# Why It Matters
+
+One notable impact is the decline in the labor participation rate, which could potentially trigger a slowdown in productivity and drive up inflation. This underlines the importance to monitor COVID-19 trends across countries.
+
+What's the best way to avoid getting infected? High vaccination rates, as vaccines provide the best long-term protection. We track vaccination rates in the following chart (note that China is not included, as the vaccination data in the data set does not look credible yet).
+
+
+```{r whyitmatters}
+
+covid.countries = c("United States", "Japan", "Germany", "United Kingdom", "India", "France")
+
+x = covid.cases[, c("date", "administrative_area_level_1", "people_vaccinated", "population")]
+x$vaccinated_ratio = x$people_vaccinated/x$population*100
+
+y = melt(x, id=c("date", "administrative_area_level_1") )
+x = cast(y[y$variable=="vaccinated_ratio",], date ~ administrative_area_level_1 + variable)
+x = zoo(x, as.Date(x$date))
+colnames(x) = gsub( "_vaccinated_ratio","", colnames(x))
+x= x[index(x) > as.Date("2020-12-01"),covid.countries]
+
+plot(x[,1], type = "n", ylab = "% of population", main = "Vaccinated as % of population", ylim = c(0,100),
+     xlab = "", 
+     xaxt = "n",
+     xlim = c(head(index(x),1), tail(index(x),1))  )
+axis(1, seq( head(index(x),1), tail(index(x),1) , "months" ),
+     as.character( as.yearmon( seq( head(index(x),1), tail(index(x),1), "months" ))), cex.axis = .8)
+
+for (idx in 1:length(covid.countries)) {
+  lines( x[,idx], col = plot.col[idx], lwd = 3)
+  points(index(tail(na.omit(x[,idx]),1)), tail(na.omit(x[,idx]),1), pch = 19, lwd = 5, col = plot.col[idx])
+}
+
+legend("topleft", colnames(x), fill = plot.col, bty = "n")
+#legend("bottomright", "Data: https://covid19datahub.io", bty = "n")
+grid()
+
+
+```
+
+Updates to these charts will be posted on Twitter as new data becomes available.
+
+
+## A note on data
+
+* All data from the COVID-19 Data Hub (https://covid19datahub.io). 
+
+* Data is accessed via the terrific COVID19 R-package, about which you can find more information in Guidotti, E., Ardia, D., (2020), "COVID-19 Data Hub", Journal of Open Source Software 5(51):2376, https://doi.org/10.21105/joss.02376
+
+ 

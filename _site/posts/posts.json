@@ -1,5 +1,22 @@
 [
   {
+    "path": "posts/2021-11-10-covid19-update/",
+    "title": "COVID19 Update",
+    "description": "Why We Care About COVID 19 (a lot!)",
+    "author": [
+      {
+        "name": "Philipp Maier",
+        "url": {}
+      }
+    ],
+    "date": "2021-11-10",
+    "categories": [],
+    "contents": "\nBackdrop\nThe COVID-19 pandemic has severely disrupted the Global Economy. From lockdowns to bottlenecks in logistics, the pandemic has impacted the economic situation.\nAnalysis\nWe first look at current infection, i.e. the evolution of daily COVID cases - and, given that this series can be very noise, we also plot the 7-day average. Charts below.\n\n\n\nWhy It Matters\nOne notable impact is the decline in the labor participation rate, which could potentially trigger a slowdown in productivity and drive up inflation. This underlines the importance to monitor COVID-19 trends across countries.\nWhat’s the best way to avoid getting infected? High vaccination rates, as vaccines provide the best long-term protection. We track vaccination rates in the following chart (note that China is not included, as the vaccination data in the data set does not look credible yet).\n\n\n\nUpdates to these charts will be posted on Twitter as new data becomes available.\nA note on data\nAll data from the COVID-19 Data Hub (https://covid19datahub.io).\nData is accessed via the terrific COVID19 R-package, about which you can find more information in Guidotti, E., Ardia, D., (2020), “COVID-19 Data Hub”, Journal of Open Source Software 5(51):2376, https://doi.org/10.21105/joss.02376\n\n\n\n",
+    "preview": "posts/2021-11-10-covid19-update/covid19-update_files/figure-html5/analysis-1.png",
+    "last_modified": "2021-11-10T22:40:46-05:00",
+    "input_file": "covid19-update.knit.md"
+  },
+  {
     "path": "posts/2021-11-07-inflation/",
     "title": "Inflation",
     "description": "What's the Issue With Inflation?",
