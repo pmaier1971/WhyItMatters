@@ -1,5 +1,22 @@
 [
   {
+    "path": "posts/2021-11-11-measures-of-economic-uncertainty-and-market-volatility/",
+    "title": "Measures of Economic Uncertainty and Market Volatility",
+    "description": "No one wants to make long-term financial decisions in a highly uncertain or volatile enviroment. But, how can we masure unertainty or volatility?",
+    "author": [
+      {
+        "name": "Philipp Maier",
+        "url": {}
+      }
+    ],
+    "date": "2021-11-11",
+    "categories": [],
+    "contents": "\nBackdrop\nLong-term investment decisions and purchases of durable consumption goods have one thing in common: they rely on planning over a potentially uncertain time horizon. The more predicable the overall economic environment, the easier it is to finance and plan big investments.\nAll else equal, a relatively more stable economic backdrop should thus benefit investment and purchases of big ticket items.\nAnaysis\nMeasuring uncertainty is not straightforward. But, two common measures of uncertainty are readily available:\nMarket Volatility is usually measured by the VIX. The VIX, also known as the ‘fear index’, is a real-time market index, and represents market participants’ expectations for volatility over the coming 30 days. Investors use the VIX to measure the level of risk, fear, or stress in the market when making investment decisions, with values over about 40 indicating hightened market stress.\nOne way to measure Economic Uncertainty is through newspaers. The St. Louis FRED data base provides a daily news-based Economic Policy Uncertainty Index, based on newspapers in the United States. This index is described in ore detail, including an analysis of the performance of the model, in Baker, Scott, Nicholas Bloom and Steven Davis (2012), “Measuring Economic Policy Uncertainty” (http://www.policyuncertainty.com/media/BakerBloomDavis.pdf)\nBoth measures are available on a daily basis, but daily reading can be noise, so we also add a rolling 7-day average.\n\n\n\nWhy It Matters\nNot surprisingly, both measures of uncertainty spiked during the COVID 19-pandemic, as investors and consumers had to access the impact of the new virus. Typically, recessions are also associated with increased volatility. Once it became clear that policymakers were committed to “do what it takes” to keep the economy afloat, market volatility subsided relatively quickly; in contrast, economic uncertainty (as measured by the newspaper-based index) showed persistent fluctuations.\nLooking ahead, as central banks will slowly normalized monetary policy, we would expect market volatility to exhibit occasional spikes. Updates to these charts will be posted on Twitter once a week week.\n\n\n\n",
+    "preview": "posts/2021-11-11-measures-of-economic-uncertainty-and-market-volatility/measures-of-economic-uncertainty-and-market-volatility_files/figure-html5/analysis-1.png",
+    "last_modified": "2021-11-11T15:49:11-05:00",
+    "input_file": "measures-of-economic-uncertainty-and-market-volatility.knit.md"
+  },
+  {
     "path": "posts/2021-11-10-covid19-update/",
     "title": "COVID19 Update",
     "description": "Why We Care About COVID 19 (a lot!)",

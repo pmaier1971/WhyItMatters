@@ -1,0 +1,165 @@
+---
+title: "Measures of Economic Uncertainty and Market Volatility"
+description: |
+  No one wants to make long-term financial decisions in a highly uncertain or volatile enviroment. But, how can we masure unertainty or volatility?
+author:
+  - name: Philipp Maier
+date: 2021-11-11
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.width=15, fig.height=10) 
+
+pkgTest <- function(x){
+  if (!require(x,character.only = TRUE)) {
+    install.packages(x,dep=TRUE)
+    if(!require(x,character.only = TRUE)) stop("Package not found")
+  }
+}
+
+pkgTest("fredr")
+pkgTest("RColorBrewer")
+pkgTest("reshape")
+pkgTest("zoo")
+pkgTest("dplyr")
+pkgTest("lubridate")
+pkgTest("tis")
+pkgTest("tm")
+
+FRED_API_KEY <- "4a91875abccae0ee89966c96d8760b60"
+fredr_set_key(FRED_API_KEY)
+
+# Data Download -------------------------------------------------------------
+
+Data.US <- c("US.EconomicPolicyUncertaintyIndex" = "USEPUINDXD",
+             "US.VIX" = "VIXCLS"
+)
+
+Data.Description <- data.frame( 
+  Mnemonic = names(Data.US), 
+  Code = Data.US,
+  Description = "", 
+  Frequeny = "",
+  Units = "",
+  LastUpdate = ""
+  )
+  
+for ( idx in 1:nrow(Data.Description) ) {
+  cat(paste("  - ", Data.Description[idx,1], "\n"))
+  x = fredr_series(series_id = Data.Description[idx,2])
+  Data.Description[idx, 3 ] = x$title
+  Data.Description[idx, 4 ] = x$frequency
+  Data.Description[idx, 5] = x$units
+  Data.Description[idx, 6] = x$last_updated
+  
+  if (idx %% 100 == 0 ) Sys.sleep(30)
+  
+}
+
+
+# Misc. functions ---------------------------------------------------------
+
+misc.FREDdowload <- function(series) {
+  
+  if (!(exists(series))) {
+    x = fredr( series_id = Data.Description[Data.Description$Mnemonic == series,2] )
+    x = zoo(x$value, as.Date(x$date))
+    if ((series == "US.H8.FedFundsSold") || (series == "US.H8.TradingAssets")) x = x / 1000
+    if ( substr(series, (nchar(series)-5), nchar(series)) == ".mm.yy") x <- 100*log(x / stats::lag(x, -12))
+    if ( substr(series, (nchar(series)-5), nchar(series)) == ".qq.yy") x <- 100*log(x / stats::lag(x, -4))
+    if ( substr(series, (nchar(series)-2), nchar(series)) == ".qq") x <- 100*log(x / stats::lag(x, -1))
+    
+  } else {
+    
+    assign("x", get(series))
+  }
+  
+  assign(series, x, envir = .GlobalEnv)
+  return(x)
+}
+
+
+misc.NBER.Recessions <- function(){
+  NBER.Recessions <- as.Date(as.character(t(nberDates())), format="%Y%m%d")
+  Limits <- par('usr')
+  for (idx in seq(1, length(NBER.Recessions), 2) ) {
+    rect(NBER.Recessions[idx], Limits[3], NBER.Recessions[idx+1], Limits[4], col="#0000FF19", lty=0)
+  }
+}
+
+
+Chart.Panel <- function(x, series) {
+  
+  chart.col   = brewer.pal(6, "Paired")[6]
+  chart.ylim  = c(0.9*range(x, na.rm=TRUE)[1], 1.1*range(x, na.rm=TRUE)[2])
+  chart.title = Data.Description[Data.Description$Mnemonic == series,3]
+  
+  plot(as.zoo(x), main = chart.title, 
+       col = chart.col, 
+       lwd = 3, 
+       ylim = chart.ylim,
+       ylab = Data.Description[grep(series, Data.Description[,1]),5],
+       xlab = paste0("Period: ", year(index(x[1])), " - ", year(index(tail(x[1]))), " (shaded areas indicate U.S. recessions)"))
+  
+  points( index(tail(x, 1)), tail(x,1), col = chart.col, pch = 19, lwd = 5)
+  abline(v = as.Date(paste0(seq( year(index(x[1])), year(Sys.Date()), 1), "-01-01")), lty = 3, lwd = 0.5)
+  misc.NBER.Recessions()
+  
+  text(index(tail(x,round(.15*length(x)))[1]), 1.1*tail(x,1), paste("Latest obs.\n", round(tail(x,1),2)), font = 2)
+  grid()
+  legend("bottomleft", "Data: St. Louis FRED", cex=.5)
+  
+}
+
+  
+```
+
+# Backdrop
+
+Long-term investment decisions and purchases of durable consumption goods have one thing in common: they rely on planning over a potentially uncertain time horizon. The more predicable the overall economic environment, the easier it is to finance and plan big investments. 
+
+All else equal, a relatively more stable economic backdrop should thus benefit investment and purchases of big ticket items.
+
+# Anaysis
+
+Measuring uncertainty is not straightforward. But, two common measures of uncertainty are readily available:
+
+* *Market* *Volatility* is usually measured by the VIX. The VIX, also known as the 'fear index', is a real-time market index, and represents market participants' expectations for volatility over the coming 30 days. Investors use the VIX to measure the level of risk, fear, or stress in the market when making investment decisions, with values over about 40 indicating hightened market stress.
+
+* One way to measure *Economic* *Uncertainty* is through newspaers. The St. Louis FRED data base provides a daily news-based Economic Policy Uncertainty Index, based on newspapers in the United States. This index is described in ore detail, including an analysis of the performance of the model, in Baker, Scott, Nicholas Bloom and Steven Davis (2012), "Measuring Economic Policy Uncertainty" (http://www.policyuncertainty.com/media/BakerBloomDavis.pdf)
+
+Both measures are available on a daily basis, but daily reading can be noise, so we also add a rolling 7-day average.
+
+```{r analysis, echo = FALSE}
+  
+series = "US.VIX"
+x = misc.FREDdowload(series = series)
+x = x[year(index(x))>(year(Sys.Date())-2)]
+
+par(mfrow=c(1,2))
+
+Chart.Panel(x = x, series = series)
+lines(rollmean(x, k = 7, align = "right"), col = brewer.pal(5, "Paired")[2], lwd = 4)
+
+series = "US.EconomicPolicyUncertaintyIndex"
+x = misc.FREDdowload(series = series)
+x = x[year(index(x))>(year(Sys.Date())-2)]
+
+Chart.Panel(x = x, series = series)
+lines(rollmean(x, k = 7, align = "right"), col = brewer.pal(5, "Paired")[2], lwd = 4)
+
+```
+  
+# Why It Matters
+
+Not surprisingly, both measures of uncertainty spiked during the COVID 19-pandemic, as investors and consumers had to access the impact of the new virus. Typically, recessions are also associated with increased volatility. Once it became clear that policymakers were committed to "do what it takes" to keep the economy afloat, market volatility subsided relatively quickly; in contrast, economic uncertainty (as measured by the newspaper-based index) showed persistent fluctuations. 
+
+Looking ahead, as central banks will slowly normalized monetary policy, we would expect market volatility to exhibit occasional spikes. Updates to these charts will be posted on Twitter once a week week.
+
+  
+  
