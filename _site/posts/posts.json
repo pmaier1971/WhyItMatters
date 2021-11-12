@@ -1,5 +1,22 @@
 [
   {
+    "path": "posts/2021-11-12-mortgage-rates/",
+    "title": "Mortgage Rates",
+    "description": "Why we care about mortgage costs",
+    "author": [
+      {
+        "name": "Philipp Maier",
+        "url": {}
+      }
+    ],
+    "date": "2021-11-12",
+    "categories": [],
+    "contents": "\nBackdrop\nA mortgages is ” “a loan used either by purchasers of real property to raise funds to buy real estate, or alternatively by existing property owners to raise funds for any purpose while putting a lien on the property being mortgaged” (Wikipedia).\nAbout 90% of all homebuyers choose 30-year fixed-rate loans, i.e. a mortgage whereby the interest rate is locked in for 30 years. Other popular choices are 15-year fixed-rate loans, or loans with adjustable rates, whereby rates can change once every 5 years (also known as “5/1 ARM”).\nAnalysis\nThe evolution of mortgage rates is worth tracking for several reasons:\nRising mortgage rates generally increase the cost of purchasing a home, so rising rates tend to slow down the housing market (which represents about 15-18% of US GDP).\nMortgage rates also offer clues about expectations for future interest rates; all else equal, an increase in the 30-year mortgage rate, relative to the 15-year mortgage rate, may signal that investors tend to expect rates to increase.\nLet’s look at some numbers.\n\n\n\nWhy It Matters\nRoughly 60% of homes purchased in the US are financed through conventional mortgages. The importance of the mortgage market becomes apparent when realizing that total mortgage debt outstanding in the United States in early 2021 was just under 17 trillion US dollar, or roughly 80% of US GDP (about 21 trillion US dollar).\nOver the coming months, mortgage rates can be expected to rise, as central banks normalize their monetary policy stance. Very rapid rate increases could be disruptive to the housing market, and may hurt affordability.\nUpdates to these charts will be posted on Twitter as new data becomes available.\n\n\n\n",
+    "preview": "posts/2021-11-12-mortgage-rates/mortgage-rates_files/figure-html5/analysis-1.png",
+    "last_modified": "2021-11-12T14:54:51-05:00",
+    "input_file": "mortgage-rates.knit.md"
+  },
+  {
     "path": "posts/2021-11-11-measures-of-economic-uncertainty-and-market-volatility/",
     "title": "Measures of Economic Uncertainty and Market Volatility",
     "description": "No one wants to make long-term financial decisions in a highly uncertain or volatile enviroment. But, how can we masure unertainty or volatility?",
