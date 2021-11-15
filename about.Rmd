@@ -8,7 +8,8 @@ description: |
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Dad. Passionate economist. Intrigued by current developments. Worked for several central banks, and cares deeply about growth, inflation and interest rates. 
+Dad. Lousy R coders. Passionate economist. Intrigued by current developments. Worked for several central banks, and cares about growth, inflation and interest rates.
 
+This blog outlines the thinking behind the posts on https://twitter.com/EconomicsShiny. Code for the tweets can be found at https://github.com/pmaier1971/AutomatedEconomicAnalysis.
 
 Note: All posts created with R / RStudio / Distill. Learn more about using Distill at <https://rstudio.github.io/distill>.

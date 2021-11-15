@@ -13,8 +13,8 @@
     "categories": [],
     "contents": "\nBackdrop\nA mortgages is ” “a loan used either by purchasers of real property to raise funds to buy real estate, or alternatively by existing property owners to raise funds for any purpose while putting a lien on the property being mortgaged” (Wikipedia).\nAbout 90% of all homebuyers choose 30-year fixed-rate loans, i.e. a mortgage whereby the interest rate is locked in for 30 years. Other popular choices are 15-year fixed-rate loans, or loans with adjustable rates, whereby rates can change once every 5 years (also known as “5/1 ARM”).\nAnalysis\nThe evolution of mortgage rates is worth tracking for several reasons:\nRising mortgage rates generally increase the cost of purchasing a home, so rising rates tend to slow down the housing market (which represents about 15-18% of US GDP).\nMortgage rates also offer clues about expectations for future interest rates; all else equal, an increase in the 30-year mortgage rate, relative to the 15-year mortgage rate, may signal that investors tend to expect rates to increase.\nLet’s look at some numbers.\n\n\n\nWhy It Matters\nRoughly 60% of homes purchased in the US are financed through conventional mortgages. The importance of the mortgage market becomes apparent when realizing that total mortgage debt outstanding in the United States in early 2021 was just under 17 trillion US dollar, or roughly 80% of US GDP (about 21 trillion US dollar).\nOver the coming months, mortgage rates can be expected to rise, as central banks normalize their monetary policy stance. Very rapid rate increases could be disruptive to the housing market, and may hurt affordability.\nUpdates to these charts will be posted on Twitter as new data becomes available.\n\n\n\n",
     "preview": "posts/2021-11-12-mortgage-rates/mortgage-rates_files/figure-html5/analysis-1.png",
-    "last_modified": "2021-11-12T14:54:51-05:00",
-    "input_file": "mortgage-rates.knit.md"
+    "last_modified": "2021-11-12T14:54:52-05:00",
+    "input_file": {}
   },
   {
     "path": "posts/2021-11-11-measures-of-economic-uncertainty-and-market-volatility/",
@@ -31,7 +31,7 @@
     "contents": "\nBackdrop\nLong-term investment decisions and purchases of durable consumption goods have one thing in common: they rely on planning over a potentially uncertain time horizon. The more predicable the overall economic environment, the easier it is to finance and plan big investments.\nAll else equal, a relatively more stable economic backdrop should thus benefit investment and purchases of big ticket items.\nAnaysis\nMeasuring uncertainty is not straightforward. But, two common measures of uncertainty are readily available:\nMarket Volatility is usually measured by the VIX. The VIX, also known as the ‘fear index’, is a real-time market index, and represents market participants’ expectations for volatility over the coming 30 days. Investors use the VIX to measure the level of risk, fear, or stress in the market when making investment decisions, with values over about 40 indicating hightened market stress.\nOne way to measure Economic Uncertainty is through newspaers. The St. Louis FRED data base provides a daily news-based Economic Policy Uncertainty Index, based on newspapers in the United States. This index is described in ore detail, including an analysis of the performance of the model, in Baker, Scott, Nicholas Bloom and Steven Davis (2012), “Measuring Economic Policy Uncertainty” (http://www.policyuncertainty.com/media/BakerBloomDavis.pdf)\nBoth measures are available on a daily basis, but daily reading can be noise, so we also add a rolling 7-day average.\n\n\n\nWhy It Matters\nNot surprisingly, both measures of uncertainty spiked during the COVID 19-pandemic, as investors and consumers had to access the impact of the new virus. Typically, recessions are also associated with increased volatility. Once it became clear that policymakers were committed to “do what it takes” to keep the economy afloat, market volatility subsided relatively quickly; in contrast, economic uncertainty (as measured by the newspaper-based index) showed persistent fluctuations.\nLooking ahead, as central banks will slowly normalized monetary policy, we would expect market volatility to exhibit occasional spikes. Updates to these charts will be posted on Twitter once a week week.\n\n\n\n",
     "preview": "posts/2021-11-11-measures-of-economic-uncertainty-and-market-volatility/measures-of-economic-uncertainty-and-market-volatility_files/figure-html5/analysis-1.png",
     "last_modified": "2021-11-11T15:49:11-05:00",
-    "input_file": "measures-of-economic-uncertainty-and-market-volatility.knit.md"
+    "input_file": {}
   },
   {
     "path": "posts/2021-11-10-covid19-update/",
@@ -47,8 +47,8 @@
     "categories": [],
     "contents": "\nBackdrop\nThe COVID-19 pandemic has severely disrupted the Global Economy. From lockdowns to bottlenecks in logistics, the pandemic has impacted the economic situation.\nAnalysis\nWe first look at current infection, i.e. the evolution of daily COVID cases - and, given that this series can be very noise, we also plot the 7-day average. Charts below.\n\n\n\nWhy It Matters\nOne notable impact is the decline in the labor participation rate, which could potentially trigger a slowdown in productivity and drive up inflation. This underlines the importance to monitor COVID-19 trends across countries.\nWhat’s the best way to avoid getting infected? High vaccination rates, as vaccines provide the best long-term protection. We track vaccination rates in the following chart (note that China is not included, as the vaccination data in the data set does not look credible yet).\n\n\n\nUpdates to these charts will be posted on Twitter as new data becomes available.\nA note on data\nAll data from the COVID-19 Data Hub (https://covid19datahub.io).\nData is accessed via the terrific COVID19 R-package, about which you can find more information in Guidotti, E., Ardia, D., (2020), “COVID-19 Data Hub”, Journal of Open Source Software 5(51):2376, https://doi.org/10.21105/joss.02376\n\n\n\n",
     "preview": "posts/2021-11-10-covid19-update/covid19-update_files/figure-html5/analysis-1.png",
-    "last_modified": "2021-11-10T22:40:46-05:00",
-    "input_file": "covid19-update.knit.md"
+    "last_modified": "2021-11-10T22:40:47-05:00",
+    "input_file": {}
   },
   {
     "path": "posts/2021-11-07-inflation/",
@@ -116,7 +116,7 @@
     "contents": "\nBackdrop\nThe pandemic, and the closure of cross-border travel, resulted in substantial disruptions for the hospitality and travel industry. Partially as a result of government support, consumption remained high, and consumers spent money on their homes - i.e. on goods like furniture, sporting goods, or building materials.\nThis causes massive surges in demand for these goods, and retailers had difficulties meeting unexpected demands. How long before consumption spending returns to more normal levels?\nThe chart below illustrates just how disruptive the pandemic was.\n\n\n\nAnalysis\nLet’s dig below the headline number. The chart below shows key components from the monthly Advance Retail Sales Report, released monthly by the U.S. Census Bureau (https://fred.stlouisfed.org/release/tables?rid=9&eid=201241#snid=201244).\nThe second chart shows the impact of the pandemic even more clearly. Bought some exercise equipment lately? You’re not alone.\n\n\n\nUpdates to these charts will be posted on Twitter as new data becomes available.\n\n\n\n",
     "preview": "posts/2021-11-07-shifting-consumption-patterns/shifting-consumption-patterns_files/figure-html5/Backdrop-1.png",
     "last_modified": "2021-11-07T22:13:17-05:00",
-    "input_file": "shifting-consumption-patterns.knit.md"
+    "input_file": {}
   },
   {
     "path": "posts/welcome/",
