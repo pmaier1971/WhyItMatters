@@ -8,6 +8,6 @@ navbar:
   right:
     - text: "Home"
       href: index.html
-    - text: "About"
+    - text: "About This Blog"
       href: about.html
 output: distill::distill_article
