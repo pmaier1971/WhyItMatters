@@ -13,7 +13,11 @@
       "title": "Economics on Twitter: Why It Matters",
       "author": [],
       "contents": "\n\n\n\n",
+<<<<<<< HEAD
       "last_modified": "2021-11-15T22:36:26-05:00"
+=======
+      "last_modified": "2021-11-15T21:58:30-05:00"
+>>>>>>> 5519d7ec52f5bfb4380bad69c71e51c1329cac6e
     }
   ],
   "collections": ["posts/posts.json"]
