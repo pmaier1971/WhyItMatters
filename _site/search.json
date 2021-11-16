@@ -5,15 +5,15 @@
       "title": "About Me",
       "description": "Why this blog",
       "author": [],
-      "contents": "\nDad. Lousy R coders. Passionate economist. Intrigued by current developments. Worked for several central banks, and cares about growth, inflation and interest rates.\nThis blog outlines the thinking behind the posts on https://twitter.com/EconomicsShiny. As I found myself playing with data and thinking about automating notifications and tweets about new data releases, I realized that not all information may be self-explanatory, and so I decided to write up my thoughts.\nGood to know:\nCode for the tweets can be found at https://github.com/pmaier1971/AutomatedEconomicAnalysis.\nAll economoic data is sourced from FRED (https://fred.stlouisfed.org/); all COVID-related data is from https://covid19datahub.io.\nAll views, and all errors, are mine.\nAll posts created with RStudio/R and the awesome Distill package. Learn more about using Distill at https://rstudio.github.io/distill.\n\n\n\n",
-      "last_modified": "2021-11-15T22:05:39-05:00"
+      "contents": "\nDad. Lousy R coders. Passionate economist. Intrigued by current developments. Worked for several central banks, and cares about growth, inflation, interest rates - and good forecasting models!\nThis blog outlines the thinking behind the posts on https://twitter.com/EconomicsShiny. As I found myself playing with data and thinking about automating notifications and tweets about new data releases, I realized that not all information may be self-explanatory, and so I decided to write up my thoughts.\nGood to know:\nCode for the tweets can be found at https://github.com/pmaier1971/AutomatedEconomicAnalysis.\nAll economoic data is sourced from FRED (https://fred.stlouisfed.org/); all COVID-related data is from https://covid19datahub.io.\nAll views, and all errors, are mine.\nAll posts created with RStudio/R and the awesome Distill package. Learn more about using Distill at https://rstudio.github.io/distill.\n\n\n\n",
+      "last_modified": "2021-11-15T22:40:48-05:00"
     },
     {
       "path": "index.html",
       "title": "Economics on Twitter: Why It Matters",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2021-11-15T22:36:26-05:00"
+      "last_modified": "2021-11-15T22:39:31-05:00"
     }
   ],
   "collections": ["posts/posts.json"]

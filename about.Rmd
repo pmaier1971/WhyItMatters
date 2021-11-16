@@ -8,7 +8,7 @@ description: |
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Dad. Lousy R coders. Passionate economist. Intrigued by current developments. Worked for several central banks, and cares about growth, inflation and interest rates. 
+Dad. Lousy R coders. Passionate economist. Intrigued by current developments. Worked for several central banks, and cares about growth, inflation, interest rates - and good forecasting models! 
 
 This blog outlines the thinking behind the posts on https://twitter.com/EconomicsShiny. As I found myself playing with data and thinking about automating notifications and tweets about new data releases, I realized that not all information may be self-explanatory, and so I decided to write up my thoughts.
 
