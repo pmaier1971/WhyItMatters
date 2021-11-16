@@ -1,0 +1,252 @@
+---
+title: "Activity Measures: What's Available? Why Care?"
+description: |
+  A short description of the post.
+author:
+  - name: Philipp Maier
+    url: {}
+date: 2021-11-15
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.width=15, fig.height=10) 
+
+pkgTest <- function(x){
+  if (!require(x,character.only = TRUE)) {
+    install.packages(x,dep=TRUE)
+    if(!require(x,character.only = TRUE)) stop("Package not found")
+  }
+}
+
+pkgTest("fredr")
+pkgTest("RColorBrewer")
+pkgTest("reshape")
+pkgTest("zoo")
+pkgTest("dplyr")
+pkgTest("lubridate")
+pkgTest("tis")
+pkgTest("tm")
+
+FRED_API_KEY <- "4a91875abccae0ee89966c96d8760b60"
+fredr_set_key(FRED_API_KEY)
+
+# Data Download -------------------------------------------------------------
+
+Data.US <- c("US.Transportation.Rail" = "RAILFRTINTERMODALD11",
+             "US.Transportation.Railpassenger" = "RAILPMD11",
+             "US.Transportation.Air" = "LOADFACTORD11",
+             "US.Transportation.Airtraffic.Passenger" = "ASMD11",
+             "US.Transportation.Airtraffic.International" = "ASMI",
+             "US.Transportation.Index" = "TSIFRGHT",
+             "US.Transportation.PublicTransit" = "TRANSITD11",
+             "US.Activity.ChicagoFed.Employment" = "EUANDH",
+             "US.Activity.ChicagoFed" = "CFNAI",
+             "US.Activity.NYFed.Current" = "GACDISA066MSFRBNY",
+             "US.Activity.NYFed.Leading" = "GAFDISA066MSFRBNY"
+)
+
+Data.Description <- data.frame( 
+  Mnemonic = names(Data.US), 
+  Code = Data.US,
+  Description = "", 
+  Frequeny = "",
+  Units = "",
+  LastUpdate = ""
+  )
+  
+for ( idx in 1:nrow(Data.Description) ) {
+  cat(paste("  - ", Data.Description[idx,1], "\n"))
+  x = fredr_series(series_id = Data.Description[idx,2])
+  Data.Description[idx, 3 ] = x$title
+  Data.Description[idx, 4 ] = x$frequency
+  Data.Description[idx, 5] = x$units
+  Data.Description[idx, 6] = x$last_updated
+  
+  if (idx %% 100 == 0 ) Sys.sleep(30)
+  
+}
+
+
+# Misc. functions ---------------------------------------------------------
+
+misc.FREDdowload <- function(series) {
+  
+  if (!(exists(series))) {
+    x = fredr( series_id = Data.Description[Data.Description$Mnemonic == series,2] )
+    x = zoo(x$value, as.Date(x$date))
+    if ((series == "US.H8.FedFundsSold") || (series == "US.H8.TradingAssets")) x = x / 1000
+    if ( substr(series, (nchar(series)-5), nchar(series)) == ".mm.yy") x <- 100*log(x / stats::lag(x, -12))
+    if ( substr(series, (nchar(series)-5), nchar(series)) == ".qq.yy") x <- 100*log(x / stats::lag(x, -4))
+    if ( substr(series, (nchar(series)-2), nchar(series)) == ".qq") x <- 100*log(x / stats::lag(x, -1))
+    
+  } else {
+    
+    assign("x", get(series))
+  }
+  
+  assign(series, x, envir = .GlobalEnv)
+  return(x)
+}
+
+
+misc.NBER.Recessions <- function(){
+  NBER.Recessions <- as.Date(as.character(t(nberDates())), format="%Y%m%d")
+  Limits <- par('usr')
+  for (idx in seq(1, length(NBER.Recessions), 2) ) {
+    rect(NBER.Recessions[idx], Limits[3], NBER.Recessions[idx+1], Limits[4], col="#0000FF19", lty=0)
+  }
+}
+
+
+
+
+Chart.Panel <- function(x, series) {
+  
+  chart.col   = brewer.pal(6, "Paired")[6]
+  chart.ylim  = c(0.9*range(x, na.rm=TRUE)[1], 1.1*range(x, na.rm=TRUE)[2])
+  chart.title = Data.Description[Data.Description$Mnemonic == series,3]
+  
+  plot(as.zoo(x), main = chart.title, 
+       col = chart.col, 
+       lwd = 3, 
+       cex = 1.3,
+       cex.axis = 1.3,
+       cex.lab = 1.3,
+       ylim = chart.ylim,
+       ylab = Data.Description[grep(series, Data.Description[,1]),5],
+       xlab = paste0("Period: ", year(index(x[1])), " - ", year(index(tail(x[1]))), " (shaded areas indicate U.S. recessions)"))
+  
+  points( index(tail(x, 1)), tail(x,1), col = chart.col, pch = 19, lwd = 5)
+  abline(v = as.Date(paste0(seq( year(index(x[1])), year(Sys.Date()), 1), "-01-01")), lty = 3, lwd = 0.5)
+  misc.NBER.Recessions()
+  
+  text(index(tail(x,round(.15*length(x)))[1]), 1.05*tail(x,1), paste("Latest obs.\n", round(tail(x,1),2)), font = 2, cex = 1.3)
+  grid()
+  legend("bottomleft", "Data: St. Louis FRED", cex=.9)
+  
+}
+
+  
+```
+
+# Backdrop
+
+Getting timely, good readings on the economy is not straightforward. 
+
+The most common and most comprehensive measurement of economic activity is real GDP growth (https://www.investopedia.com/terms/r/realeconomicrate.asp). GDP data is published on a quarterly basis, and the release is essentially backward-looking, in that it summarizes what *was*, not what *will* happen. Add to this the fact that GDP data gets revised several times (due to new information becoming available), and it's easy to see that to get a timely sense of whether economic growth is accelerating or stalling, additional information is needed.
+
+There are several survey-based measures available, and many contain forward-looking questions or components. While not always a great predictor of future GDP data, these measures often do yield clues about future developments. 
+
+Let's review some of these measures.
+
+# Anaysis
+
+## Survey-Based Measures
+
+The first type of activity measures are survey-based. Several surveys exist; a common feature is that participants acrosss certain geographical boundaries or industries fill out questionnaires, providing their opinion on the economy and on specific indicators. Often, respondents are also providing their assessment of likely future direction of these indicators.
+
+A well-known survey-based measure is the Purchasing Managers' Index, or PMI, published by Markit. Measures available on FRED (https://fred.stlouisfed.org/) include the *Empire State Manufacturing Survey*, and the *Chicago Fed National Activity Index*. Various subindices are published; a few interesting metrics are plotted below.
+
+Notable features:
+
+- While the general direction of indices is typically correlated, differences in the indices can reflect e.g. different geographics or industries. The Empire State index, for instance, puts a relatively stronger weight on manufacturing, reflecting the composition of the survey area. If manufacturing is viewed as critical for the economic outlook going forward (e.g. because the sector is the hardest hit by a shock), the index is relatively more informative.
+
+- Survey-based measures are typically constructed such that values > 50 indicate an improvement, and values < 50 a worsening of conditions. Simply put, a drop in an index from, say, 60 to 55 does not imply a contraction; instead, respondents still view the situation favorably, but the pace of the expansion may slow down.
+
+```{r analysis1, echo = FALSE}
+ 
+series="US.Activity.NYFed.Current"
+periods = 25 
+x = misc.FREDdowload(series = series)
+x = x[year(index(x))>(year(Sys.Date())-periods)]
+Chart.Panel(x = x, series = series)
+  
+  
+series="US.Activity.NYFed.Leading"
+periods = 25 
+x = misc.FREDdowload(series = series)
+x = x[year(index(x))>(year(Sys.Date())-periods)]
+Chart.Panel(x = x, series = series)
+
+
+series="US.Activity.ChicagoFed.Employment"
+periods = 25 
+x = misc.FREDdowload(series = series)
+x = x[year(index(x))>(year(Sys.Date())-periods)]
+Chart.Panel(x = x, series = series)
+
+
+series="US.Activity.ChicagoFed"
+periods = 25 
+x = misc.FREDdowload(series = series)
+x = x[year(index(x))>(year(Sys.Date())-periods)]
+Chart.Panel(x = x, series = series)
+
+```
+
+
+## Activity-Based Measures
+
+High-frequency, activity-based measures with leading properties are often related to specific bottlenecks or logistics. For instance, a sharp drop in riders on the NYC subway during the pandemic was an early indication that commuters are hesitant to travel, and so retail and commercial real estate in urban centers may come under pressure. Declines in air traffic or passenger revenue are early signals that the airline industry may face headwinds. 
+
+
+```{r analysis2, echo = FALSE}
+
+series1 = "US.Transportation.Air"
+series2 = "US.Transportation.Airtraffic.Passenger"
+series3 = "US.Transportation.Railpassenger"
+series4 =  "US.Transportation.PublicTransit"
+
+
+x1 = misc.FREDdowload(series = series1)
+x2 = misc.FREDdowload(series = series2)
+x3 = misc.FREDdowload(series = series3)
+x4 = misc.FREDdowload(series = series4)
+
+x1 = x1[year(index(x1))>(year(Sys.Date())-25)]
+x2 = x2[year(index(x2))>(year(Sys.Date())-25)]
+x3 = x3[year(index(x3))>(year(Sys.Date())-25)]
+x4 = x4[year(index(x4))>(year(Sys.Date())-25)]
+
+par(mfrow=c(2,2))
+Chart.Panel(x = x1, series = series1)
+Chart.Panel(x = x2, series = series2)
+Chart.Panel(x = x3, series = series3)
+Chart.Panel(x = x4, series = series4)
+par(mfrow=c(1,1))
+
+
+series1 = "US.Transportation.Rail"
+series2 = "US.Transportation.Index"
+
+x1 = misc.FREDdowload(series = series1)
+x2 = misc.FREDdowload(series = series2)
+x1 = x1[year(index(x1))>(year(Sys.Date())-25)]
+x2 = x2[year(index(x2))>(year(Sys.Date())-25)]
+
+par(mfrow=c(1,2))
+Chart.Panel(x = x1, series = series1)
+Chart.Panel(x = x2, series = series2)
+par(mfrow=c(1,1))
+
+
+```
+  
+# Why It Matters
+
+Notice one common feature: at the outset of the pandemic, all indicators were flashing red? That decline happened long before GDP data confirmed the steep decline in economic activity. Hence the value of these metrics: if a shock hits the economy, monitoring these metrics can be useful.
+
+Bottom line: These variables can help, if properly used and interpreted.
+
+- High-frequency metrics are typically volatile, and may not always be reliable indicators of future developments. Survey participants can over-react, resulting in very noisy signals. In a forecasting model, such metrics typically do not exhibit strong predictive power. In normal cirumstances, these metrics are probably most useful as early "warnings" to signal shocks, before hard data - which is only available with a lag - provides a more complete picture.
+
+- That said, during the post-pandemic recovery, metrics such as passenger traffic on railways or air traffic measure gives an indication of how far some economic sectors still have to go to return to "normal" levels.
+
+Updates to these charts will be posted on Twitter as new data becomes available.
+
+  
