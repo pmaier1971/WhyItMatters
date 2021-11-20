@@ -15,6 +15,7 @@ collections:
   posts:
     share: [twitter, linkedin]
     disqus: https-whyitmatters-netlify-app
+    citations: false
 twitter:
   site: "@economicsshiny"
   creator: "@economicsshiny"

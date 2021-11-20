@@ -4,10 +4,19 @@
     <title>Economics on Twitter: Why It Matters</title>
     <link>https://whyitmatters.netlify.app</link>
     <atom:link href="https://whyitmatters.netlify.app/index.xml" rel="self" type="application/rss+xml"/>
-    <description>Economics on Twitter: Why The Information Matters
+    <description>Economics on Twitter: Outlining Why We Post What We Post on Twitter
 </description>
     <generator>Distill</generator>
-    <lastBuildDate>Mon, 15 Nov 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 19 Nov 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>How Changes in Interest Rates Affect the Yield Curve</title>
+      <dc:creator>Philipp Maier</dc:creator>
+      <link>https://whyitmatters.netlify.app/posts/2021-11-19-how-changes-in-interest-rates-affect-the-yield-curve</link>
+      <description>Interest Rates Change All The Time. Does It Matter?</description>
+      <guid>https://whyitmatters.netlify.app/posts/2021-11-19-how-changes-in-interest-rates-affect-the-yield-curve</guid>
+      <pubDate>Fri, 19 Nov 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://whyitmatters.netlify.app/posts/2021-11-19-how-changes-in-interest-rates-affect-the-yield-curve/how-changes-in-interest-rates-affect-the-yield-curve_files/figure-html5/analysis1-1.png" medium="image" type="image/png" width="2880" height="1920"/>
+    </item>
     <item>
       <title>Activity Measures: What's Available? Why Care?</title>
       <dc:creator>Philipp Maier</dc:creator>

@@ -1,0 +1,220 @@
+---
+title: "How Changes in Interest Rates Affect the Yield Curve"
+description: |
+  Interest Rates Change All The Time. Does It Matter?
+author:
+  - name: Philipp Maier
+    url: {}
+date: 2021-11-19
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.width=15, fig.height=10) 
+
+pkgTest <- function(x){
+  if (!require(x,character.only = TRUE)) {
+    install.packages(x,dep=TRUE)
+    if(!require(x,character.only = TRUE)) stop("Package not found")
+  }
+}
+
+pkgTest("fredr")
+pkgTest("RColorBrewer")
+pkgTest("reshape")
+pkgTest("zoo")
+pkgTest("dplyr")
+pkgTest("lubridate")
+pkgTest("tis")
+pkgTest("tm")
+
+FRED_API_KEY <- "4a91875abccae0ee89966c96d8760b60"
+fredr_set_key(FRED_API_KEY)
+
+# Data Download -------------------------------------------------------------
+
+Data.US <- c("US.CPI.Core.mm.yy"="CPILFESL",
+             "US.SOV.1Y"="DGS1", 
+             "US.SOV.2Y"="DGS2", 
+             "US.SOV.3Y"="DGS3", 
+             "US.SOV.5Y"="DGS5", 
+             "US.SOV.7Y"="DGS7", 
+             "US.SOV.10Y"="DGS10", 
+             "US.SOV.20Y"="DGS20", 
+             "US.SOV.30Y"="DGS30"
+)
+
+Data.Description <- data.frame( 
+  Mnemonic = names(Data.US), 
+  Code = Data.US,
+  Description = "", 
+  Frequeny = "",
+  Units = "",
+  LastUpdate = ""
+  )
+  
+for ( idx in 1:nrow(Data.Description) ) {
+  cat(paste("  - ", Data.Description[idx,1], "\n"))
+  x = fredr_series(series_id = Data.Description[idx,2])
+  Data.Description[idx, 3 ] = x$title
+  Data.Description[idx, 4 ] = x$frequency
+  Data.Description[idx, 5] = x$units
+  Data.Description[idx, 6] = x$last_updated
+  
+  if (idx %% 100 == 0 ) Sys.sleep(30)
+  
+}
+
+
+# Misc. functions ---------------------------------------------------------
+
+misc.FREDdowload <- function(series) {
+  
+  if (!(exists(series))) {
+    x = fredr( series_id = Data.Description[Data.Description$Mnemonic == series,2] )
+    x = zoo(x$value, as.Date(x$date))
+    if ((series == "US.H8.FedFundsSold") || (series == "US.H8.TradingAssets")) x = x / 1000
+    if ( substr(series, (nchar(series)-5), nchar(series)) == ".mm.yy") x <- 100*log(x / stats::lag(x, -12))
+    if ( substr(series, (nchar(series)-5), nchar(series)) == ".qq.yy") x <- 100*log(x / stats::lag(x, -4))
+    if ( substr(series, (nchar(series)-2), nchar(series)) == ".qq") x <- 100*log(x / stats::lag(x, -1))
+    
+  } else {
+    
+    assign("x", get(series))
+  }
+  
+  assign(series, x, envir = .GlobalEnv)
+  return(x)
+}
+
+
+misc.NBER.Recessions <- function(){
+  NBER.Recessions <- as.Date(as.character(t(nberDates())), format="%Y%m%d")
+  Limits <- par('usr')
+  for (idx in seq(1, length(NBER.Recessions), 2) ) {
+    rect(NBER.Recessions[idx], Limits[3], NBER.Recessions[idx+1], Limits[4], col="#0000FF19", lty=0)
+  }
+}
+
+
+
+
+Chart.Panel <- function(x, series) {
+  
+  chart.col   = brewer.pal(6, "Paired")[6]
+  chart.ylim  = c(0.9*range(x, na.rm=TRUE)[1], 1.1*range(x, na.rm=TRUE)[2])
+  chart.title = Data.Description[Data.Description$Mnemonic == series,3]
+  
+  plot(as.zoo(x), main = chart.title, 
+       col = chart.col, 
+       lwd = 3, 
+       cex = 1.3,
+       cex.axis = 1.3,
+       cex.lab = 1.3,
+       ylim = chart.ylim,
+       ylab = Data.Description[grep(series, Data.Description[,1]),5],
+       xlab = paste0("Period: ", year(index(x[1])), " - ", year(index(tail(x[1]))), " (shaded areas indicate U.S. recessions)"))
+  
+  points( index(tail(x, 1)), tail(x,1), col = chart.col, pch = 19, lwd = 5)
+  abline(v = as.Date(paste0(seq( year(index(x[1])), year(Sys.Date()), 1), "-01-01")), lty = 3, lwd = 0.5)
+  misc.NBER.Recessions()
+  
+  text(index(tail(x,round(.15*length(x)))[1]), 1.05*tail(x,1), paste("Latest obs.\n", round(tail(x,1),2)), font = 2, cex = 1.3)
+  grid()
+  legend("bottomleft", "Data: St. Louis FRED", cex=.9)
+  
+}
+
+
+
+InterestRate.Chart <- function(Data.Rates) {
+  Data.Rates.dim <- length(colnames(Data.Rates))
+  Data.Rates[,2:Data.Rates.dim] <- Data.Rates[,2:Data.Rates.dim] - Data.Rates[,1:(Data.Rates.dim-1)]
+  
+  week  <- function(x)format(x, '%Y.W%W')
+  month <- function(x)format(x, '%Y.M%m')
+  year  <- function(x)format(x, '%Y')
+  
+  Data.Rates.D        <- as.zoo(Data.Rates[index(Data.Rates)>=Sys.Date() %m-% months(1),])
+  Data.Rates.M        <- as.zoo(Data.Rates[index(Data.Rates)>=Sys.Date()-years(15),])
+  Data.Rates.M        <- aggregate(Data.Rates.M, by=month, FUN=mean, na.rm=TRUE)
+  Data.Rates.Names    <-c("1Y", "2Y", "3Y", "5Y", "7Y", "10Y") 
+  index(Data.Rates.M) <- as.yearmon(index(Data.Rates.M), format = "%Y.M%m")
+  
+ 
+  par(mfrow = c(2,1))
+  
+  chart.col = brewer.pal(Data.Rates.dim, "Paired")
+  barplot(na.omit(Data.Rates.D), col=chart.col, cex.main=1.5, cex.names = 1.25, border=NA, 
+          main="Treasury Rates (Constant Maturity, Daily Yields in %):\n Changes in the last month")
+  grid(col="black")
+  legend("bottomleft", Data.Rates.Names, fill=chart.col, cex=1)
+  
+  barplot(Data.Rates.M, col=chart.col, cex.main=1.5, cex.names = 1, border=NA, #las=2,
+          main="Treasury Rates (Constant Maturity, Monthly Average Yield in %):\n Evolution over the past 5 years")
+  grid(col="black")
+  legend("bottomleft", Data.Rates.Names, fill=chart.col, cex=1)
+  
+  par(mfrow = c(1,1))
+  
+}
+
+
+  
+```
+
+# Backdrop
+
+Interest rates matter. They convey information about likely future developments, and are a key tool policymakers (specifially: central banks) have to influence the economy. 
+
+Let's take a look.
+
+Interest rates matter because they impact saving and spending decisions of firms and households. A higher interest rates makes borrowing money more expensive, slowing down purchases of expensive goods (which may require financing, like cars or houses). Conversely, saving money becomes more attractive, as savings yield higher returns when interest rates are higher. All else equal, higher interest rates tend to slow down consumption and boost savings. Given that about 70% of US GDP is consumption, changes in interest rates are an important tool to slow down - or stimulate - overall economic development.
+
+Central banks can impact short-term borrowing costs or banks (which impacts interest rates for consumers and firms). While correlated, interest rates do not (always) move in a syncronized way. Broadly speaking, one important distinction is between short- and long-term interest rates (the latter referring to government bonds with a maturity of about 10 years). Consumers usually tend to be impacted more by short-term interest rates (with the exception of mortgages), while firm's investment decisions typically tend to be more impacted by long-term interest rates. The change in the relationship between short- and long-term rates is also referred to as the change in the slope of the Yield Curve. For more information about how monetary policy works and how it affects interest rates, take a look at this: https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm
+
+Lastly, interest rates can also convey information about markets' expectations of future interest rates. Higher expected inflation, for instance, tends to drive up short-term interest rates, but if inflation is expected to be temporary, long-term rates are not likely to move by much. 
+
+With that said, and with inflation hitting levels not seen in decades, let's take a look at some recent episodes to see what interest rates can tell us.
+
+# Anaysis
+
+The chart below shows U.S. Treasury rates over the past month (top panel) and a longer-term view of the past 15 years (bottom).
+
+- Looking at the bottom panel, the first thing to note is that short-term interest rates are much more volatile that long-term rates (ie. there is much more variation over time in the light blue bars depicting the 1-year Treasury rate than in the 10-year rate). E.g. during the 2007-2011 time period, short-term rates dropped essentially close to 0%, while the 10-year rate remained mostly in the 3-4% range. Similarly, pre-pandemic in 2017-2019, the increase in short-temr rates barely impacted the 10-year rate.
+
+- Second, a stated goal of Quantitative Easing (https://www.investopedia.com/terms/q/quantitative-easing.asp) was to bring down long-term rates. This was successful, as evidenced by the then-unprecedented low levels of the 10Y rate in 2012/13.
+
+- Let's look at the most recent episode since January 2021. With inflation rising to levels not seen in years (following chart, see also https://whyitmatters.netlify.app/posts/2021-11-07-inflation/), market participants expect some moderate increase in interest rates, as shown by the rising rates towards the right of the bottom graph.
+
+How persistent do markets judge this increase to be? If it was thought be very persistent, the 10-year would probaby see a sharper rise. Right now it seems that the bulk of the change is concentrated in the 3- and 5-year interest rates. This suggest that market participants deem the rise in inflation to be somewhat persistent, but not permanent.
+
+```{r analysis1, echo = FALSE}
+ InterestRate.Chart(Data.Rates = Reduce(function(...) merge(...), list( misc.FREDdowload("US.SOV.1Y"), 
+                                                                       misc.FREDdowload("US.SOV.2Y"), 
+                                                                       misc.FREDdowload("US.SOV.3Y"), 
+                                                                       misc.FREDdowload("US.SOV.5Y"), 
+                                                                       misc.FREDdowload("US.SOV.7Y"), 
+                                                                       misc.FREDdowload("US.SOV.10Y") ))
+                    )
+
+series="US.CPI.Core.mm.yy"
+periods = 25 
+x = misc.FREDdowload(series = series)
+x = x[year(index(x))>(year(Sys.Date())-periods)]
+Chart.Panel(x = x, series = series)
+
+```
+
+ 
+# Why It Matters
+
+A key uncertainty is how much current shocks (such as supply bottlenecks) are temporary, as opposed to impacting inflation expectations, risking to be more entrenched and persistent. Interest rates can give us clues how financial markets just current developments. At this stage, long-term rates are still at exceptionally low levels, and are not suggesting that inflation expectations are threatening to become unanchored.
+ 
+Looking ahead, monitoring interest rates and looking at changes in the yield curve to detect shifts in investor sentiment can help inform about expectations that inflation may persist. Well-anchored inflation expectations reduce interest rates and are important elements facilitating sustainable long-term growth. That's why the information contained in interest rates is so vital.
+
+Updates to these charts will be posted on Twitter as new data becomes available.
