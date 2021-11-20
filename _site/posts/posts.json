@@ -13,17 +13,10 @@
     "categories": [],
     "contents": "\nBackdrop\nGetting timely, good readings on the economy is not straightforward.\nThe most common and most comprehensive measurement of economic activity is real GDP growth (https://www.investopedia.com/terms/r/realeconomicrate.asp). GDP data is published on a quarterly basis, and the release is essentially backward-looking, in that it summarizes what was, not what will happen. Add to this the fact that GDP data gets revised several times (due to new information becoming available), and it’s easy to see that to get a timely sense of whether economic growth is accelerating or stalling, additional information is needed.\nThere are several survey-based measures available, and many contain forward-looking questions or components. While not always a great predictor of future GDP data, these measures often do yield clues about future developments.\nLet’s review some of these measures.\nAnaysis\nSurvey-Based Measures\nThe first type of activity measures are survey-based. Several surveys exist; a common feature is that participants acrosss certain geographical boundaries or industries fill out questionnaires, providing their opinion on the economy and on specific indicators. Often, respondents are also providing their assessment of likely future direction of these indicators.\nA well-known survey-based measure is the Purchasing Managers’ Index, or PMI, published by Markit. Measures available on FRED (https://fred.stlouisfed.org/) include the Empire State Manufacturing Survey, and the Chicago Fed National Activity Index. Various subindices are published; a few interesting metrics are plotted below.\nNotable features:\nWhile the general direction of indices is typically correlated, differences in the indices can reflect e.g. different geographics or industries. The Empire State index, for instance, puts a relatively stronger weight on manufacturing, reflecting the composition of the survey area. If manufacturing is viewed as critical for the economic outlook going forward (e.g. because the sector is the hardest hit by a shock), the index is relatively more informative.\nSurvey-based measures are typically constructed such that values > 50 indicate an improvement, and values < 50 a worsening of conditions. Simply put, a drop in an index from, say, 60 to 55 does not imply a contraction; instead, respondents still view the situation favorably, but the pace of the expansion may slow down.\n\n\n\nActivity-Based Measures\nHigh-frequency, activity-based measures with leading properties are often related to specific bottlenecks or logistics. For instance, a sharp drop in riders on the NYC subway during the pandemic was an early indication that commuters are hesitant to travel, and so retail and commercial real estate in urban centers may come under pressure. Declines in air traffic or passenger revenue are early signals that the airline industry may face headwinds.\n\n\n\nWhy It Matters\nNotice one common feature: at the outset of the pandemic, all indicators were flashing red? That decline happened long before GDP data confirmed the steep decline in economic activity. Hence the value of these metrics: if a shock hits the economy, monitoring these metrics can be useful.\nBottom line: These variables can help, if properly used and interpreted.\nHigh-frequency metrics are typically volatile, and may not always be reliable indicators of future developments. Survey participants can over-react, resulting in very noisy signals. In a forecasting model, such metrics typically do not exhibit strong predictive power. In normal cirumstances, these metrics are probably most useful as early “warnings” to signal shocks, before hard data - which is only available with a lag - provides a more complete picture.\nThat said, during the post-pandemic recovery, metrics such as passenger traffic on railways or air traffic measure gives an indication of how far some economic sectors still have to go to return to “normal” levels.\nUpdates to these charts will be posted on Twitter as new data becomes available.\n\n\n\n",
     "preview": "posts/2021-11-15-activity-measures-whats-available-why-care/activity-measures-whats-available-why-care_files/figure-html5/analysis1-1.png",
-<<<<<<< HEAD
-    "last_modified": "2021-11-15T22:39:31-05:00",
-    "input_file": {}
-=======
-    "last_modified": "2021-11-15T22:31:43-05:00",
-<<<<<<< HEAD
-    "input_file": {}
-=======
-    "input_file": "activity-measures-whats-available-why-care.knit.md"
->>>>>>> 5519d7ec52f5bfb4380bad69c71e51c1329cac6e
->>>>>>> 3ee3584b085e1fc166379e6cb2d151546deec0f1
+    "last_modified": "2021-11-19T19:27:34-05:00",
+    "input_file": "activity-measures-whats-available-why-care.knit.md",
+    "preview_width": 2880,
+    "preview_height": 1920
   },
   {
     "path": "posts/2021-11-12-mortgage-rates/",
@@ -40,7 +33,9 @@
     "contents": "\nBackdrop\nA mortgages is ” “a loan used either by purchasers of real property to raise funds to buy real estate, or alternatively by existing property owners to raise funds for any purpose while putting a lien on the property being mortgaged” (Wikipedia).\nAbout 90% of all homebuyers choose 30-year fixed-rate loans, i.e. a mortgage whereby the interest rate is locked in for 30 years. Other popular choices are 15-year fixed-rate loans, or loans with adjustable rates, whereby rates can change once every 5 years (also known as “5/1 ARM”).\nAnalysis\nThe evolution of mortgage rates is worth tracking for several reasons:\nRising mortgage rates generally increase the cost of purchasing a home, so rising rates tend to slow down the housing market (which represents about 15-18% of US GDP).\nMortgage rates also offer clues about expectations for future interest rates; all else equal, an increase in the 30-year mortgage rate, relative to the 15-year mortgage rate, may signal that investors tend to expect rates to increase.\nLet’s look at some numbers.\n\n\n\nWhy It Matters\nRoughly 60% of homes purchased in the US are financed through conventional mortgages. The importance of the mortgage market becomes apparent when realizing that total mortgage debt outstanding in the United States in early 2021 was just under 17 trillion US dollar, or roughly 80% of US GDP (about 21 trillion US dollar).\nOver the coming months, mortgage rates can be expected to rise, as central banks normalize their monetary policy stance. Very rapid rate increases could be disruptive to the housing market, and may hurt affordability.\nUpdates to these charts will be posted on Twitter as new data becomes available.\n\n\n\n",
     "preview": "posts/2021-11-12-mortgage-rates/mortgage-rates_files/figure-html5/analysis-1.png",
     "last_modified": "2021-11-12T14:54:52-05:00",
-    "input_file": {}
+    "input_file": {},
+    "preview_width": 2880,
+    "preview_height": 1920
   },
   {
     "path": "posts/2021-11-11-measures-of-economic-uncertainty-and-market-volatility/",
@@ -57,15 +52,9 @@
     "contents": "\nBackdrop\nLong-term investment decisions and purchases of durable consumption goods have one thing in common: they rely on planning over a potentially uncertain time horizon. The more predicable the overall economic environment, the easier it is to finance and plan big investments.\nAll else equal, a relatively more stable economic backdrop should thus benefit investment and purchases of big ticket items.\nAnaysis\nMeasuring uncertainty is not straightforward. But, two common measures of uncertainty are readily available:\nMarket Volatility is usually measured by the VIX. The VIX, also known as the ‘fear index’, is a real-time market index, and represents market participants’ expectations for volatility over the coming 30 days. Investors use the VIX to measure the level of risk, fear, or stress in the market when making investment decisions, with values over about 40 indicating hightened market stress.\nOne way to measure Economic Uncertainty is through newspaers. The St. Louis FRED data base provides a daily news-based Economic Policy Uncertainty Index, based on newspapers in the United States. This index is described in ore detail, including an analysis of the performance of the model, in Baker, Scott, Nicholas Bloom and Steven Davis (2012), “Measuring Economic Policy Uncertainty” (http://www.policyuncertainty.com/media/BakerBloomDavis.pdf)\nBoth measures are available on a daily basis, but daily reading can be noise, so we also add a rolling 7-day average.\n\n\n\nWhy It Matters\nNot surprisingly, both measures of uncertainty spiked during the COVID 19-pandemic, as investors and consumers had to access the impact of the new virus. Typically, recessions are also associated with increased volatility. Once it became clear that policymakers were committed to “do what it takes” to keep the economy afloat, market volatility subsided relatively quickly; in contrast, economic uncertainty (as measured by the newspaper-based index) showed persistent fluctuations.\nLooking ahead, as central banks will slowly normalized monetary policy, we would expect market volatility to exhibit occasional spikes. Updates to these charts will be posted on Twitter regularly.\n\n\n\n",
     "preview": "posts/2021-11-11-measures-of-economic-uncertainty-and-market-volatility/measures-of-economic-uncertainty-and-market-volatility_files/figure-html5/analysis-1.png",
     "last_modified": "2021-11-15T22:22:41-05:00",
-<<<<<<< HEAD
-    "input_file": {}
-=======
-<<<<<<< HEAD
-    "input_file": {}
-=======
-    "input_file": "measures-of-economic-uncertainty-and-market-volatility.knit.md"
->>>>>>> 5519d7ec52f5bfb4380bad69c71e51c1329cac6e
->>>>>>> 3ee3584b085e1fc166379e6cb2d151546deec0f1
+    "input_file": {},
+    "preview_width": 2880,
+    "preview_height": 1920
   },
   {
     "path": "posts/2021-11-10-covid19-update/",
@@ -82,7 +71,9 @@
     "contents": "\nBackdrop\nThe COVID-19 pandemic has severely disrupted the Global Economy. From lockdowns to bottlenecks in logistics, the pandemic has impacted the economic situation.\nAnalysis\nWe first look at current infection, i.e. the evolution of daily COVID cases - and, given that this series can be very noise, we also plot the 7-day average. Charts below.\n\n\n\nWhy It Matters\nOne notable impact is the decline in the labor participation rate, which could potentially trigger a slowdown in productivity and drive up inflation. This underlines the importance to monitor COVID-19 trends across countries.\nWhat’s the best way to avoid getting infected? High vaccination rates, as vaccines provide the best long-term protection. We track vaccination rates in the following chart (note that China is not included, as the vaccination data in the data set does not look credible yet).\n\n\n\nUpdates to these charts will be posted on Twitter as new data becomes available.\nA note on data\nAll data from the COVID-19 Data Hub (https://covid19datahub.io).\nData is accessed via the terrific COVID19 R-package, about which you can find more information in Guidotti, E., Ardia, D., (2020), “COVID-19 Data Hub”, Journal of Open Source Software 5(51):2376, https://doi.org/10.21105/joss.02376\n\n\n\n",
     "preview": "posts/2021-11-10-covid19-update/covid19-update_files/figure-html5/analysis-1.png",
     "last_modified": "2021-11-10T22:40:47-05:00",
-    "input_file": {}
+    "input_file": {},
+    "preview_width": 2880,
+    "preview_height": 1920
   },
   {
     "path": "posts/2021-11-07-inflation/",
@@ -99,7 +90,9 @@
     "contents": "\nBackground\nPrices change all the time. Why do we care so much about inflation? Are all price changes created equal? And are all equally concerning?\nFirst up - let’s define what inflation is, and the differences are between relative price changes and changes in the price level.\nInflation or a change in the price level can be defined as “a general progressive increase in prices of goods and services in an economy” (https://en.wikipedia.org/wiki/Inflation). This erodes the value of cash, as one is able to buy less goods and services with existing money. Inflation is typically measured by tracking the costs to purchase a defined basked of goods over time.\nA change in relative prices means that the price for good A goes up, while the price for good B goes down. Even if the overall price level - i.e. the weighted average paid for both good - does not change, relative price change make good A more or less expensive, relative to good B. Relative price changes happen all the time - e.g. the cost of computers has fallen dramatically over time, while rents or the cost of education has risen.\nRelative price changes are common, but central banks are concerned about increases in the general price level, because it erodes the purchasing power of consumers and makes it more difficult to plan ahead. Developments can become concerning once broad-based price increases translate into changes in expected inflation.\nSo, let’s see how the economy was doing at the time this post was written.\nAnalysis: Where do we currently stand?\nThe following chart shows the evolution of inflation (specifically: headline inflation, or a broad consumer price index) since 1997. Shaded areas indicate recessions. Two elements stand out:\nFirst, during recessions, headline inflation tend to fall. In part, this is because the most volatile parts of the consumer basket sees sharp declines, and we would expect an inflation measure excluding components like food or energy to be more stable.\nSecond, inflation is currently at the highest level in over 20 years.\n\n\n\nLet’s dive deeper. The following charts break down changes in individual inflation components. Not surprisingly, during past recessions core inflation fell less than headline inflation, and the current increase is less pronouced (first chart, top-left panel).\n\n\n\nWhy Does It Matter?\nCentral banks are less likely to respond to relative price changes than to broad-based changes in inflation. Let’s check: How broad-based is the increase in inflation?\nAs the last chart shows, relative to pre-pandemic times, most key components show rising prices. While it’s too early for the final verdict, these charts support the notion that the current increase in inflation is fairly broad-based, and central banks will need to monitor it carefully.\n\n\n\nUpdates to these charts will be posted on Twitter as new data becomes available.\n\n\n\n",
     "preview": "posts/2021-11-07-inflation/inflation_files/figure-html5/HeadlineInflation-1.png",
     "last_modified": "2021-11-07T16:13:18-05:00",
-    "input_file": {}
+    "input_file": {},
+    "preview_width": 2880,
+    "preview_height": 1920
   },
   {
     "path": "posts/2021-11-07-motor-vehicle-sales-supply-side-disruptions/",
@@ -150,7 +143,9 @@
     "contents": "\nBackdrop\nThe pandemic, and the closure of cross-border travel, resulted in substantial disruptions for the hospitality and travel industry. Partially as a result of government support, consumption remained high, and consumers spent money on their homes - i.e. on goods like furniture, sporting goods, or building materials.\nThis causes massive surges in demand for these goods, and retailers had difficulties meeting unexpected demands. How long before consumption spending returns to more normal levels?\nThe chart below illustrates just how disruptive the pandemic was.\n\n\n\nAnalysis\nLet’s dig below the headline number. The chart below shows key components from the monthly Advance Retail Sales Report, released monthly by the U.S. Census Bureau (https://fred.stlouisfed.org/release/tables?rid=9&eid=201241#snid=201244).\nThe second chart shows the impact of the pandemic even more clearly. Bought some exercise equipment lately? You’re not alone.\n\n\n\nUpdates to these charts will be posted on Twitter as new data becomes available.\n\n\n\n",
     "preview": "posts/2021-11-07-shifting-consumption-patterns/shifting-consumption-patterns_files/figure-html5/Backdrop-1.png",
     "last_modified": "2021-11-07T22:13:17-05:00",
-    "input_file": {}
+    "input_file": {},
+    "preview_width": 2880,
+    "preview_height": 1920
   },
   {
     "path": "posts/welcome/",

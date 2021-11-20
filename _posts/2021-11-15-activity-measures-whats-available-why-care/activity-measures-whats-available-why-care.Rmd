@@ -46,6 +46,10 @@ Data.US <- c("US.Transportation.Rail" = "RAILFRTINTERMODALD11",
              "US.Transportation.PublicTransit" = "TRANSITD11",
              "US.Activity.ChicagoFed.Employment" = "EUANDH",
              "US.Activity.ChicagoFed" = "CFNAI",
+             "US.Activity.PhillyFed.DeliveryTime" = "DTCDFSA066MSFRBPHI",
+             "US.Activity.PhillyFed.DeliveryIncreasedTime" = "DTCISA156MSFRBPHI",
+             "US.Activity.PhillyFed.PricesPaid" = "PPCDFSA066MSFRBPHI",
+             "US.Activity.PhillyFed.CurrentWorkHours" = "AWCDFSA066MSFRBPHI",
              "US.Activity.NYFed.Current" = "GACDISA066MSFRBNY",
              "US.Activity.NYFed.Leading" = "GAFDISA066MSFRBNY"
 )
@@ -187,8 +191,31 @@ x = misc.FREDdowload(series = series)
 x = x[year(index(x))>(year(Sys.Date())-periods)]
 Chart.Panel(x = x, series = series)
 
-```
 
+series1="US.Activity.PhillyFed.DeliveryTime"
+series2="US.Activity.PhillyFed.DeliveryIncreasedTime"
+series3="US.Activity.PhillyFed.PricesPaid"
+series4="US.Activity.PhillyFed.CurrentWorkHours"
+periods = 35
+
+  x1 = misc.FREDdowload(series = series1)
+  x2 = misc.FREDdowload(series = series2)
+  x3 = misc.FREDdowload(series = series3)
+  x4 = misc.FREDdowload(series = series4)
+  
+  x1 = x1[year(index(x1))>(year(Sys.Date())-periods)]
+  x2 = x2[year(index(x2))>(year(Sys.Date())-periods)]
+  x3 = x3[year(index(x3))>(year(Sys.Date())-periods)]
+  x4 = x4[year(index(x4))>(year(Sys.Date())-periods)]
+  
+  par(mfrow=c(2,2))
+  Chart.Panel(x = x1, series = series1)
+  Chart.Panel(x = x2, series = series2)
+  Chart.Panel(x = x3, series = series3)
+  Chart.Panel(x = x4, series = series4)
+par(mfrow=c(1,1))
+
+```
 
 ## Activity-Based Measures
 

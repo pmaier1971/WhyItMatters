@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+  <channel>
+    <title>Economics on Twitter: Why It Matters</title>
+    <link>https://whyitmatters.netlify.app</link>
+    <atom:link href="https://whyitmatters.netlify.app/index.xml" rel="self" type="application/rss+xml"/>
+    <description>Economics on Twitter: Why It Matters
+</description>
+    <generator>Distill</generator>
+    <lastBuildDate>Mon, 15 Nov 2021 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Activity Measures: What's Available? Why Care?</title>
+      <dc:creator>Philipp Maier</dc:creator>
+      <link>https://whyitmatters.netlify.app/posts/2021-11-15-activity-measures-whats-available-why-care</link>
+      <description>Predicting the future with high-frequency activity indicators - is that possible?</description>
+      <guid>https://whyitmatters.netlify.app/posts/2021-11-15-activity-measures-whats-available-why-care</guid>
+      <pubDate>Mon, 15 Nov 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://whyitmatters.netlify.app/posts/2021-11-15-activity-measures-whats-available-why-care/activity-measures-whats-available-why-care_files/figure-html5/analysis1-1.png" medium="image" type="image/png" width="2880" height="1920"/>
+    </item>
+    <item>
+      <title>Mortgage Rates</title>
+      <dc:creator>Philipp Maier</dc:creator>
+      <link>https://whyitmatters.netlify.app/posts/2021-11-12-mortgage-rates</link>
+      <description>Why we care about mortgage costs</description>
+      <guid>https://whyitmatters.netlify.app/posts/2021-11-12-mortgage-rates</guid>
+      <pubDate>Fri, 12 Nov 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://whyitmatters.netlify.app/posts/2021-11-12-mortgage-rates/mortgage-rates_files/figure-html5/analysis-1.png" medium="image" type="image/png" width="2880" height="1920"/>
+    </item>
+    <item>
+      <title>Measures of Economic Uncertainty and Market Volatility</title>
+      <dc:creator>Philipp Maier</dc:creator>
+      <link>https://whyitmatters.netlify.app/posts/2021-11-11-measures-of-economic-uncertainty-and-market-volatility</link>
+      <description>No one wants to make long-term financial decisions in a highly uncertain or volatile enviroment. But, how can we masure unertainty or volatility?</description>
+      <guid>https://whyitmatters.netlify.app/posts/2021-11-11-measures-of-economic-uncertainty-and-market-volatility</guid>
+      <pubDate>Thu, 11 Nov 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://whyitmatters.netlify.app/posts/2021-11-11-measures-of-economic-uncertainty-and-market-volatility/measures-of-economic-uncertainty-and-market-volatility_files/figure-html5/analysis-1.png" medium="image" type="image/png" width="2880" height="1920"/>
+    </item>
+    <item>
+      <title>COVID19 Update</title>
+      <dc:creator>Philipp Maier</dc:creator>
+      <link>https://whyitmatters.netlify.app/posts/2021-11-10-covid19-update</link>
+      <description>Why We Care About COVID 19 (a lot!)</description>
+      <guid>https://whyitmatters.netlify.app/posts/2021-11-10-covid19-update</guid>
+      <pubDate>Wed, 10 Nov 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://whyitmatters.netlify.app/posts/2021-11-10-covid19-update/covid19-update_files/figure-html5/analysis-1.png" medium="image" type="image/png" width="2880" height="1920"/>
+    </item>
+    <item>
+      <title>Inflation</title>
+      <dc:creator>Philipp Maier</dc:creator>
+      <link>https://whyitmatters.netlify.app/posts/2021-11-07-inflation</link>
+      <description>What's the Issue With Inflation?</description>
+      <guid>https://whyitmatters.netlify.app/posts/2021-11-07-inflation</guid>
+      <pubDate>Sun, 07 Nov 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://whyitmatters.netlify.app/posts/2021-11-07-inflation/inflation_files/figure-html5/HeadlineInflation-1.png" medium="image" type="image/png" width="2880" height="1920"/>
+    </item>
+    <item>
+      <title>Motor Vehicle Sales: Signs of Supply Side Disruptions?</title>
+      <dc:creator>Philipp Maier</dc:creator>
+      <link>https://whyitmatters.netlify.app/posts/2021-11-07-motor-vehicle-sales-supply-side-disruptions</link>
+      <description>Let's parse the latest data on motor vehicle sales</description>
+      <guid>https://whyitmatters.netlify.app/posts/2021-11-07-motor-vehicle-sales-supply-side-disruptions</guid>
+      <pubDate>Sun, 07 Nov 2021 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Post-Pandemic Expansion: How Is It Different?</title>
+      <dc:creator>Philipp Maier</dc:creator>
+      <link>https://whyitmatters.netlify.app/posts/2021-11-07-post-pandemic-recovery</link>
+      <description>Comparing The Current Recovery to Past Expansions</description>
+      <guid>https://whyitmatters.netlify.app/posts/2021-11-07-post-pandemic-recovery</guid>
+      <pubDate>Sun, 07 Nov 2021 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Shifting Consumption Patterns</title>
+      <dc:creator>Philipp Maier</dc:creator>
+      <link>https://whyitmatters.netlify.app/posts/2021-11-07-shifting-consumption-patterns</link>
+      <description>With Travel Restricted, Consumers Continue Their Serious Retail Therapy. What Does It Mean for the Economy?</description>
+      <guid>https://whyitmatters.netlify.app/posts/2021-11-07-shifting-consumption-patterns</guid>
+      <pubDate>Sun, 07 Nov 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://whyitmatters.netlify.app/posts/2021-11-07-shifting-consumption-patterns/shifting-consumption-patterns_files/figure-html5/Backdrop-1.png" medium="image" type="image/png" width="2880" height="1920"/>
+    </item>
+    <item>
+      <title>Welcome to Economics on Twitter: Why It Matters</title>
+      <dc:creator>Philipp Maier</dc:creator>
+      <link>https://whyitmatters.netlify.app/posts/welcome</link>
+      <description>Economics on Twitter, or: Why It Matters. 
+
+Background information on why we post what we post on https://twitter.com/EconomicsShiny</description>
+      <guid>https://whyitmatters.netlify.app/posts/welcome</guid>
+      <pubDate>Sat, 06 Nov 2021 00:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>
