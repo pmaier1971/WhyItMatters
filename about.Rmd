@@ -8,11 +8,13 @@ description: |
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Dad. Lousy R coders. Passionate economist. Intrigued by current developments. Worked for several central banks, and cares about growth, inflation, interest rates - and good forecasting models! 
+Dad. Passionate economist. Lousy coder. Intrigued by current developments. Worked for several central banks, and cares about growth, inflation, interest rates - and good forecasting models! 
 
-This blog outlines the thinking behind the posts on https://twitter.com/EconomicsShiny. As I found myself playing with data and thinking about automating notifications and tweets about new data releases, I realized that not all information may be self-explanatory, and so I decided to write up my thoughts.
+This blog complements the posts on https://twitter.com/EconomicsShiny. There are really two reasons for me to start this: first, while I'm not great at writing code, I enjoy it a lot. Second, as an economist I routinely look at economic data releases, but usually the notifications are not _exactly_ reflecting how I'd be looking at the data, and so I thought that I could combine my "hobby" (coding) and my "passion" (economics). As I found myself playing with data and thinking about automating notifications and tweets about new data releases, I realized that not all information may be self-explanatory, and so I decided to write up my thoughts.
 
 Good to know:
+
+- No fixed schedule for new blog posts.
 
 - Code for the tweets can be found at https://github.com/pmaier1971/AutomatedEconomicAnalysis.
 
@@ -20,4 +22,8 @@ Good to know:
 
 - **All views, and all errors, are mine.**
 
-All posts created with RStudio/R and the awesome Distill package. Learn more about using Distill at <https://rstudio.github.io/distill>.
+Posts are created with RStudio/R and the awesome Distill package. Learn more about using Distill at <https://rstudio.github.io/distill>.
+
+Side note: check out this blog from my friend Jay: https://jaybrhodes1972.wixsite.com/website
+
+
