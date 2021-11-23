@@ -20,22 +20,36 @@ library(COVID19)
 library(zoo)
 library(lubridate)
 library(reshape)
+library(fredr)
+library(tis)
+
+quartzFonts(avenir = c("Avenir Book", "Avenir Black", "Avenir Book Oblique", 
+                       "Avenir Black Oblique"))
 
 ```
 
 # Backdrop
 
-The COVID-19 pandemic has severely disrupted the Global Economy. From lockdowns to bottlenecks in logistics, the pandemic has impacted the economic situation. 
+The COVID-19 pandemic has severely disrupted the Global Economy. From lockdowns to bottlenecks in logistics, the pandemic dominates the economic picture. High rates of infections also impact consumption pattern, as well as workers' willingness to return to work (potentially lowering the labor participation rate). 
+
+In the face of people not returning to work as swiftly as predicted, there is a risk that policymakers may overestimate economic potential. This underscores the need to track infections and vaccination rates.
+
+What are some of the metrics we can look at?
 
 # Analysis
 
-We first look at current infection, i.e. the evolution of daily COVID cases - and, given that this series can be very noise, we also plot the 7-day average. Charts below.
+Let's first look at current infections, i.e. the evolution of daily COVID cases - and, given that this series can be very noisy, we also plot the 7-day average. 
+
+Charts below show current infection rates for major economies; first in absolute terms, then per 100K people to enable comparisons across countries.
 
 ```{r analysis}
 
-covid.countries = c("United States", "China", "Japan", "Germany", "United Kingdom", "India", "France")
+covid.countries = c("United States", "China", "Japan", "Germany", "United Kingdom", "India", "France", "Italy", "Brazil", "Canada")
 covid.cases     = covid19(covid.countries, verbose = FALSE)
 plot.col        = brewer.pal(10, "Paired")
+
+par(bg = "#f7f7f7")
+par(family = 'avenir')
 
 par(mfrow = c(2,3))
 covid.countries = c("United States", "China", "Japan", "Germany", "United Kingdom", "India")
@@ -46,52 +60,268 @@ for (idx in covid.countries) {
        xlab = "", xaxt = "n", col = plot.col[1], lwd = 3, cex.main = 2.2, cex.axis = 1.4, cex.lab = 1.3)
   lines(rollmean(x, k=7), col = plot.col[6], lwd = 3)
   axis(1, floor_date(index(x), 'month'), as.yearmon(floor_date(index(x), 'month')), cex.axis = 1)
-#  legend("topleft", "Data: https://covid19datahub.io", cex=1.2, bty = "n")
+  #  legend("topleft", "Data: https://covid19datahub.io", cex=1.2, bty = "n")
   grid()
 }
 par(mfrow = c(1,1))
+
+
+covid.countries    = c("United States", "Japan", "Germany", "United Kingdom", "India", "Italy", "Brazil", "Canada")
+x                  = covid.cases[, c("date", "administrative_area_level_1", "confirmed", "population")]
+x$confirmed        = c(0, diff(x$confirmed))
+x$confirmed        = c(rep(0, 6), rollmean(x$confirmed, k=7, align = "right"))
+x$confirmed = x$confirmed/x$population*100000
+
+y             = melt(x, id=c("date", "administrative_area_level_1") )
+x             = cast(y[y$variable=="confirmed",], date ~ administrative_area_level_1 + variable)
+x             = zoo(x, as.Date(x$date))
+colnames(x)   = gsub( "_confirmed","", colnames(x))
+x             = x[index(x) > as.Date("2020-12-01"),covid.countries]
+country.order = covid.countries[order(tail(na.locf(x),1), decreasing = T)] # because we will use custom text labels to indicate last values, we need to determine the country's order
+
+par(oma=c(3,3,3,3))
+par(mar=c(5,5,4,2) + 0.1)
+par(bg = "#f7f7f7")
+par(family = 'avenir')
+plot(x[,1], type = "n", 
+     main = "New confirmed cases of COVID 19 in Major Economies", 
+     xlab = "", ylab = "7-day rolling average of new cases (per 100K)", ylim = c(0,100),
+     cex.main = 2,cex.axis = 1.5, cex.lab = 2, 
+     xaxt = "n",
+     xlim = c(head(index(x),1), tail(index(x),1)+months(3))  )
+
+
+axis(1, seq( head(index(x),1), tail(index(x),1) , "months" ),
+     as.character( as.yearmon( seq( head(index(x),1), tail(index(x),1), "months" ))), family = "A", cex.axis = 1.0)
+
+for (idx in 1:length(covid.countries)) {
+  lines( x[,idx], col = plot.col[idx], lwd = 4)
+  points(index(tail(na.omit(x[,idx]),1)), tail(na.omit(x[,idx]),1), pch = 19, lwd = 5, col = plot.col[idx])
+  
+  text(index(tail(na.omit(x[,1]),1))+days(10), max(x, na.rm = TRUE)-grep(covid.countries[idx], country.order)*5, 
+       paste0(covid.countries[idx], ": ", round( tail(na.omit(x[,idx]),1),1), "K"), col = plot.col[idx],
+       adj = 0, cex = 1.25, font = 2)
+}
+
+legend("bottomright", "Data: https://covid19datahub.io", bty = "n")
+abline(h=c(20, 40, 60, 80), col =  "black", lty = 3)
+par(bg = "white")
 
 ```
 
 
 # Why It Matters
 
-One notable impact is the decline in the labor participation rate, which could potentially trigger a slowdown in productivity and drive up inflation. This underlines the importance to monitor COVID-19 trends across countries.
+One notable result of the pandemic is the decline in the labor participation rate, which could potentially trigger a slowdown in productivity and drive up inflation. The verdict of what's causing this, and how long-lasting this effect is, is still out. But, it underlines the importance to monitor COVID-19 trends across countries.
 
-What's the best way to avoid getting infected? High vaccination rates, as vaccines provide the best long-term protection. We track vaccination rates in the following chart (note that China is not included, as the vaccination data in the data set does not look credible yet).
+How serious is this issue? Let's look at some labor data As the charts below show, during the pandemic we observed a marked decline in the labor participation rate, and while part-time employment for non-economic reasons has rebounded, the overall labor participation rate is still considerably below pre-pandemic levels. All else equal, less worker mean less economic potential to produce stuff, and attempts to stimulate the economy may not lead to increases in output, but only drive up inflation.
 
+```{r whyitmatterspart1, echo = FALSE}
 
-```{r whyitmatters}
+FRED_API_KEY <- "4a91875abccae0ee89966c96d8760b60"
+fredr_set_key(FRED_API_KEY)
 
-covid.countries = c("United States", "Japan", "Germany", "United Kingdom", "India", "France")
-
-x = covid.cases[, c("date", "administrative_area_level_1", "people_vaccinated", "population")]
-x$vaccinated_ratio = x$people_vaccinated/x$population*100
-
-y = melt(x, id=c("date", "administrative_area_level_1") )
-x = cast(y[y$variable=="vaccinated_ratio",], date ~ administrative_area_level_1 + variable)
-x = zoo(x, as.Date(x$date))
-colnames(x) = gsub( "_vaccinated_ratio","", colnames(x))
-x= x[index(x) > as.Date("2020-12-01"),covid.countries]
-
-plot(x[,1], type = "n", ylab = "% of population", main = "Vaccinated as % of population", ylim = c(0,100),
-     xlab = "", 
-     xaxt = "n",
-     xlim = c(head(index(x),1), tail(index(x),1))  )
-axis(1, seq( head(index(x),1), tail(index(x),1) , "months" ),
-     as.character( as.yearmon( seq( head(index(x),1), tail(index(x),1), "months" ))), cex.axis = .8)
-
-for (idx in 1:length(covid.countries)) {
-  lines( x[,idx], col = plot.col[idx], lwd = 3)
-  points(index(tail(na.omit(x[,idx]),1)), tail(na.omit(x[,idx]),1), pch = 19, lwd = 5, col = plot.col[idx])
+misc.FREDdowload <- function(series) {
+  
+  if (!(exists(series))) {
+    x = fredr( series_id = Data.Description[Data.Description$Mnemonic == series,2] )
+    x = zoo(x$value, as.Date(x$date))
+    if ((series == "US.H8.FedFundsSold") || (series == "US.H8.TradingAssets")) x = x / 1000
+    if ( substr(series, (nchar(series)-5), nchar(series)) == ".mm.yy") x <- 100*log(x / stats::lag(x, -12))
+    if ( substr(series, (nchar(series)-5), nchar(series)) == ".qq.yy") x <- 100*log(x / stats::lag(x, -4))
+    if ( substr(series, (nchar(series)-2), nchar(series)) == ".qq") x <- 100*log(x / stats::lag(x, -1))
+    
+  } else {
+    assign("x", get(series))
+  }
+  
+  assign(series, x, envir = .GlobalEnv)
+  return(x)
 }
 
-legend("topleft", colnames(x), fill = plot.col, bty = "n")
-#legend("bottomright", "Data: https://covid19datahub.io", bty = "n")
-grid()
+
+misc.NBER.Recessions <- function(){
+  NBER.Recessions <- as.Date(as.character(t(nberDates())), format="%Y%m%d")
+  Limits <- par('usr')
+  for (idx in seq(1, length(NBER.Recessions), 2) ) {
+    rect(NBER.Recessions[idx], Limits[3], NBER.Recessions[idx+1], Limits[4], col="#0000FF19", lty=0)
+  }
+}
+
+# Data Download -------------------------------------------------------------
+
+Data.US <- c("US.Unemployment"="UNRATE", 
+             "US.Unemployment.U1" = "U1RATE", 
+             "US.Unemployment.U6" = "U6RATE", 
+             "US.Unemployment.U2" = "U2RATE",
+             "US.Unemployment.PartTimeEconomicReasons" = "LNS12032194", 
+             "US.Unemployment.PartTimeNonEconomicReasons" = "LNS12032200",
+             "US.Unemployment.MarginallyAttached" = "LNU05026642",
+             "US.Unemployment.ParticipationRate"="CIVPART",
+             "US.Unemployment.EmploymentToPopulation"="EMRATIO"
+)
+
+
+Data.Description <- data.frame( 
+  Mnemonic = names(Data.US), 
+  Code = Data.US,
+  Description = "", 
+  Frequeny = "",
+  Units = "",
+  LastUpdate = ""
+)
+
+for ( idx in 1:nrow(Data.Description) ) {
+  x = fredr_series(series_id = Data.Description[idx,2])
+  Data.Description[idx, 3 ] = x$title
+  Data.Description[idx, 4 ] = x$frequency
+  Data.Description[idx, 5] = x$units
+  Data.Description[idx, 6] = x$last_updated
+}
+
+
+Chart.Panel <- function(x, series) {
+  
+  chart.col   = brewer.pal(6, "Paired")[6]
+  chart.ylim  = c(0.9*range(x, na.rm=TRUE)[1], 1.1*range(x, na.rm=TRUE)[2])
+  chart.title = Data.Description[Data.Description$Mnemonic == series,3]
+  
+  par(bg = "#f7f7f7")
+  par(family = 'avenir')
+  
+  plot(as.zoo(x), main = chart.title, 
+       col = chart.col, 
+       lwd = 3, 
+       cex = 1.3,
+       cex.axis = 1.3,
+       cex.lab = 1.3,
+       ylim = chart.ylim,
+       ylab = Data.Description[grep(series, Data.Description[,1]),5],
+       xlab = paste0("Period: ", year(index(x[1])), " - ", year(index(tail(x[1]))), " (shaded areas indicate U.S. recessions)"))
+  
+  points( index(tail(x, 1)), tail(x,1), col = chart.col, pch = 19, lwd = 5)
+  abline(v = as.Date(paste0(seq( year(index(x[1])), year(Sys.Date()), 1), "-01-01")), lty = 3, lwd = 0.5)
+  misc.NBER.Recessions()
+  
+  text(index(tail(x,round(.15*length(x)))[1]), 1.05*tail(x,1), paste("Latest obs.\n", round(tail(x,1),2)), font = 2, cex = 1.3)
+  grid()
+  legend("bottomleft", "Data: St. Louis FRED", cex=.9)
+  
+}
+
+
+series2 = "US.Unemployment.ParticipationRate" 
+series4 = "US.Unemployment.PartTimeNonEconomicReasons"
+periods = 25
+x2 = misc.FREDdowload(series = series2)
+x4 = misc.FREDdowload(series = series4)
+x2 = x2[year(index(x2))>(year(Sys.Date())-periods)]
+x4 = x4[year(index(x4))>(year(Sys.Date())-periods)]
+
+par(mfrow=c(1,2))
+Chart.Panel(x = x2, series = series2)
+Chart.Panel(x = x4, series = series4)
+par(mfrow=c(1,1))
+
+```
+
+
+In order for people to re-enter the labor force, they need to feel secure and protected from the virus. What's the best way to avoid getting infected? High vaccination rates, as vaccines provide the best long-term protection. 
+
+We track 2 vaccination metrics; first the ratio of fully vaccinated (defined as people having received all prescribed doses of a vaccine over total population), and second partially vaccinated people (defined has having received at least one dose, divided by total population).
+
+The chart below shows the latest developments for major economies (note that China is not included, as the vaccination data in the data set does not look credible yet). We see that vaccination rates are rising, but not close yet to the 70+% level most experts would consider consistent with achieving 'herd immunity'.
+
+
+```{r whyitmatterspart2}
+
+
+covid.countries = c("United States", "Japan", "Germany", "United Kingdom", "India", "France", "Italy", "Brazil", "Canada")
+x                  = covid.cases[, c("date", "administrative_area_level_1", "people_fully_vaccinated", "population")]
+x$vaccinated_ratio = x$people_fully_vaccinated/x$population*100
+
+y             = melt(x, id=c("date", "administrative_area_level_1") )
+x             = cast(y[y$variable=="vaccinated_ratio",], date ~ administrative_area_level_1 + variable)
+x             = zoo(x, as.Date(x$date))
+colnames(x)   = gsub( "_vaccinated_ratio","", colnames(x))
+x             = x[index(x) > as.Date("2020-12-01"),covid.countries]
+country.order = covid.countries[order(tail(na.locf(x),1), decreasing = T)] # because we will use custom text labels to indicate last values, we need to determine the country's order
+
+par(oma=c(3,3,3,3))
+par(mar=c(5,5,4,2) + 0.1)
+par(bg = "#f7f7f7")
+par(family = 'avenir')
+
+plot(x[,1], type = "n", 
+     main = "Fully Vaccinated People as % of Total Population: Major Economies", 
+     xlab = "", ylab = "Fully vaccinated as % of population", ylim = c(0,100),
+     cex.main = 2,cex.axis = 1.5, cex.lab = 2, 
+     xaxt = "n",
+     xlim = c(head(index(x),1), tail(index(x),1)+months(3))  )
+
+
+axis(1, seq( head(index(x),1), tail(index(x),1) , "months" ),
+     as.character( as.yearmon( seq( head(index(x),1), tail(index(x),1), "months" ))), cex.axis = 1.0)
+
+for (idx in 1:length(covid.countries)) {
+  lines( x[,idx], col = plot.col[idx], lwd = 4)
+  points(index(tail(na.omit(x[,idx]),1)), tail(na.omit(x[,idx]),1), pch = 19, lwd = 5, col = plot.col[idx])
+  
+  text(index(tail(na.omit(x[,1]),1))+days(10), 1.1*max(x, na.rm = TRUE)-grep(covid.countries[idx], country.order)*5, 
+       paste0(covid.countries[idx], ": ", round( tail(na.omit(x[,idx]),1),1), "%"), col = plot.col[idx],
+       adj = 0, cex = 1.0, font = 2)
+}
+
+legend("bottomright", "Data: https://covid19datahub.io", bty = "n")
+abline(h=c(20, 40, 60, 80), col =  plot.col[2], lty = 3)
+
+
+
+
+covid.countries = c("United States", "Japan", "Germany", "United Kingdom", "India", "France", "Italy", "Brazil", "Canada")
+
+x                  = covid.cases[, c("date", "administrative_area_level_1", "people_vaccinated", "population")]
+x$vaccinated_ratio = x$people_vaccinated/x$population*100
+
+y             = melt(x, id=c("date", "administrative_area_level_1") )
+x             = cast(y[y$variable=="vaccinated_ratio",], date ~ administrative_area_level_1 + variable)
+x             = zoo(x, as.Date(x$date))
+colnames(x)   = gsub( "_vaccinated_ratio","", colnames(x))
+x             = x[index(x) > as.Date("2020-12-01"),covid.countries]
+country.order = covid.countries[order(tail(na.locf(x),1), decreasing = T)] # because we will use custom text labels to indicate last values, we need to determine the country's order
+
+par(oma=c(3,3,3,3))
+par(mar=c(5,5,4,2) + 0.1)
+par(bg = "#f7f7f7")
+par(family = 'avenir')
+
+plot(x[,1], type = "n", 
+     main = "Partially Vaccinated People as % of Total Population: Major Economies", 
+     xlab = "", ylab = "Fully or partially vaccinated as % of population", ylim = c(0,100),
+     cex.main = 2,cex.axis = 1.5, cex.lab = 2, 
+     xaxt = "n",
+     xlim = c(head(index(x),1), tail(index(x),1)+months(3))  )
+
+
+axis(1, seq( head(index(x),1), tail(index(x),1) , "months" ),
+     as.character( as.yearmon( seq( head(index(x),1), tail(index(x),1), "months" ))), cex.axis = 1.0)
+
+for (idx in 1:length(covid.countries)) {
+  lines( x[,idx], col = plot.col[idx], lwd = 4)
+  points(index(tail(na.omit(x[,idx]),1)), tail(na.omit(x[,idx]),1), pch = 19, lwd = 5, col = plot.col[idx])
+  
+  text(index(tail(na.omit(x[,1]),1))+days(10), 1.1*max(x, na.rm = TRUE)-grep(covid.countries[idx], country.order)*5, 
+       paste0(covid.countries[idx], ": ", round( tail(na.omit(x[,idx]),1),1), "%"), col = plot.col[idx],
+       adj = 0, cex = 1.25, font = 2)
+}
+
+legend("bottomright", "Data: https://covid19datahub.io", bty = "n")
+abline(h=c(20, 40, 60, 80), col =  plot.col[2], lty = 3)
 
 
 ```
+
+All this to say: arguably one of the key factors driving your assessment of where you think the economy is going is your (implicit or explicit) assumption about the effects of the pandemic.
 
 Updates to these charts will be posted on Twitter as new data becomes available.
 
@@ -102,4 +332,4 @@ Updates to these charts will be posted on Twitter as new data becomes available.
 
 * Data is accessed via the terrific COVID19 R-package, about which you can find more information in Guidotti, E., Ardia, D., (2020), "COVID-19 Data Hub", Journal of Open Source Software 5(51):2376, https://doi.org/10.21105/joss.02376
 
- 
+
