@@ -16,14 +16,17 @@ Good to know:
 
 - No fixed schedule for new blog posts.
 
-- Code for the tweets can be found at https://github.com/pmaier1971/AutomatedEconomicAnalysis.
+- Code for the tweets can be found at https://github.com/pmaier1971/AutomatedEconomicAnalysis (which I'll update periodically).
 
 - All economoic data is sourced from FRED (https://fred.stlouisfed.org/); all COVID-related data is from https://covid19datahub.io. 
 
 - **All views, and all errors, are mine.**
 
-Posts are created with RStudio/R and the awesome Distill package. Learn more about using Distill at <https://rstudio.github.io/distill>.
+- Posts are created with RStudio/R and the awesome Distill package. Learn more about using Distill at <https://rstudio.github.io/distill>.
 
-Side note: check out this blog from my friend Jay: https://jaybrhodes1972.wixsite.com/website
+Lastly, check out this blog from my friend Jay: https://jaybrhodes1972.wixsite.com/website
+
+Feedback? Email me at pmaier1971@gmail.com.
+
 
 

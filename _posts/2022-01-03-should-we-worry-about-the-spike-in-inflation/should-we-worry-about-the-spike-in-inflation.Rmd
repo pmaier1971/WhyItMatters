@@ -1,0 +1,253 @@
+---
+title: "Should We Worry About the Spike in Inflation?"
+description: |
+  Inflation rates are at levels last seen in the 1980s. How concerned should we be?
+author:
+  - name: Philipp Maier
+    url: {}
+date: 2022-01-03
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.width=15, fig.height=10) 
+
+pkgTest <- function(x){
+  if (!require(x,character.only = TRUE)) {
+    install.packages(x,dep=TRUE)
+    if(!require(x,character.only = TRUE)) stop("Package not found")
+  }
+}
+
+pkgTest("fredr")
+pkgTest("RColorBrewer")
+pkgTest("reshape")
+pkgTest("zoo")
+pkgTest("dplyr")
+pkgTest("lubridate")
+pkgTest("tis")
+pkgTest("tm")
+
+FRED_API_KEY <- "4a91875abccae0ee89966c96d8760b60"
+fredr_set_key(FRED_API_KEY)
+
+# Data Download -------------------------------------------------------------
+
+Data.US <- c("US.PCE.Headline.mm.yy"="PCEPI",
+             "US.PCE.Headline"="PCEPI",
+             "US.CPI.Headline.mm.yy"="CPIAUCSL", 
+             "US.PCE.Core"="PCEPILFE",
+             "US.PCE.Core.mm.yy"="PCEPILFE", 
+             "US.CPI.Headline"="CPIAUCSL", 
+             "US.CPI.Core"="CPILFESL",
+             "US.CPI.Core.mm.yy"="CPILFESL",
+             "US.CPI.AlcoholicBeverages.mm.yy" = "CUSR0000SEFW",
+             "US.CPI.AlcoholicBeveragesAway.mm.yy" = "CUSR0000SEFX",
+             "US.CPI.FoodBeverages.mm.yy" = "CPIFABSL",
+             "US.CPI.Housing.mm.yy" = "CPIHOSSL",
+             "US.CPI.Apparel.mm.yy" = "CPIAPPSL",
+             "US.CPI.Medical.mm.yy" = "CPIMEDSL",
+             "US.CPI.Recreation.mm.yy" = "CPIRECSL",
+             "US.CPI.Education.mm.yy" = "CPIEDUSL",
+             "US.CPI.Other.mm.yy" = "CPIOGSSL"
+)
+
+Data.Description <- data.frame( 
+  Mnemonic = names(Data.US), 
+  Code = Data.US,
+  Description = "", 
+  Frequeny = "",
+  Units = "",
+  LastUpdate = ""
+  )
+  
+for ( idx in 1:nrow(Data.Description) ) {
+  cat(paste("  - ", Data.Description[idx,1], "\n"))
+  x = fredr_series(series_id = Data.Description[idx,2])
+  Data.Description[idx, 3 ] = x$title
+  Data.Description[idx, 4 ] = x$frequency
+  Data.Description[idx, 5] = x$units
+  Data.Description[idx, 6] = x$last_updated
+  
+  if (idx %% 100 == 0 ) Sys.sleep(30)
+  
+}
+
+
+# Misc. functions ---------------------------------------------------------
+
+misc.FREDdowload <- function(series) {
+  
+  if (!(exists(series))) {
+    x = fredr( series_id = Data.Description[Data.Description$Mnemonic == series,2] )
+    x = zoo(x$value, as.Date(x$date))
+    if ((series == "US.H8.FedFundsSold") || (series == "US.H8.TradingAssets")) x = x / 1000
+    if ( substr(series, (nchar(series)-5), nchar(series)) == ".mm.yy") x <- 100*log(x / stats::lag(x, -12))
+    if ( substr(series, (nchar(series)-5), nchar(series)) == ".qq.yy") x <- 100*log(x / stats::lag(x, -4))
+    if ( substr(series, (nchar(series)-2), nchar(series)) == ".qq") x <- 100*log(x / stats::lag(x, -1))
+    
+  } else {
+    
+    assign("x", get(series))
+  }
+  
+  assign(series, x, envir = .GlobalEnv)
+  return(x)
+}
+
+
+misc.NBER.Recessions <- function(){
+  NBER.Recessions <- as.Date(as.character(t(nberDates())), format="%Y%m%d")
+  Limits <- par('usr')
+  for (idx in seq(1, length(NBER.Recessions), 2) ) {
+    rect(NBER.Recessions[idx], Limits[3], NBER.Recessions[idx+1], Limits[4], col="#0000FF19", lty=0)
+  }
+}
+
+
+Chart.Panel <- function(x, series) {
+  
+  chart.col   = brewer.pal(6, "Paired")[6]
+  chart.ylim  = c(0.9*range(x, na.rm=TRUE)[1], 1.1*range(x, na.rm=TRUE)[2])
+  chart.title = Data.Description[Data.Description$Mnemonic == series,3]
+  
+  plot(as.zoo(x), main = chart.title, 
+       col = chart.col, 
+       lwd = 3, 
+       ylim = chart.ylim,
+       ylab = Data.Description[grep(series, Data.Description[,1]),5],
+       xlab = paste0("Period: ", year(index(x[1])), " - ", year(index(tail(x[1]))), " (shaded areas indicate U.S. recessions)"))
+  
+  points( index(tail(x, 1)), tail(x,1), col = chart.col, pch = 19, lwd = 5)
+  abline(v = as.Date(paste0(seq( year(index(x[1])), year(Sys.Date()), 1), "-01-01")), lty = 3, lwd = 0.5)
+  misc.NBER.Recessions()
+  
+  text(index(tail(x,round(.15*length(x)))[1]), 1.1*tail(x,1), paste("Latest obs.\n", round(tail(x,1),2)), font = 2)
+  grid()
+  legend("bottomleft", "Data: St. Louis FRED", cex=.5)
+  
+}
+
+  
+```
+
+# Backdrop
+
+Inflation data from November 2021 showed that inflation rose at 6.8%, relative to a year ago - the fastest rate since 1982. As we have shown previously (https://whyitmatters.netlify.app/posts/2021-11-07-inflation/), price pressures are broad-based, suggesting that there is a risk that the rise in prices may not be short-lived. 
+
+Already the media is jumping on it, proclaiming that "everything you buy seem(s) more expensive?" ( https://www.usatoday.com/story/money/shopping/2021/12/10/inflation-car-prices-gas-food-cost-increases/6463519001/). This concern is consistent with monetary policymakers accelerating plans to withdraw monetary stimulus (https://www.npr.org/2021/12/15/1064478567/inflation-hot-federal-reserve-interest-rates-bond-taper). 
+
+Viewed over a longer time horizon, though, the rise in inflation looks a lot less worrisome. In fact, one could argue that the most recent price increases brings prices to levels consistent with a longer 2% **trend** inflation rate.
+
+Let's explore.
+
+
+
+# Anaysis
+
+
+First, below the last 10 years of inflation data. The spike in inflation in late 2021 is clearly visible in both inflation measures.
+
+```{r analysis, echo = FALSE}
+
+par(mfrow=c(1,2))
+
+series = "US.PCE.Headline.mm.yy"
+x = misc.FREDdowload(series = series)
+x = x[year(index(x))>(year(Sys.Date())-10)]
+
+Chart.Panel(x = x, series = series)
+
+series = "US.CPI.Headline.mm.yy"
+x = misc.FREDdowload(series = series)
+x = x[year(index(x))>(year(Sys.Date())-10)]
+
+Chart.Panel(x = x, series = series)
+
+```
+
+Recall that inflation (a change in the price level) can be defined as “a general progressive increase in prices of goods and services in an economy” (https://en.wikipedia.org/wiki/Inflation). Inflation erodes the value of cash, as one is able to buy less goods and services with existing money. 
+
+Inflation is typically measured by tracking the costs to purchase a defined basked of goods over time, and the two measures shown above differ in the composition of the basket. According to the BLS, the PCE measure is a bit more broad-based, and differences in weight and differences in accounting for substitution effects betweeen goods account for the bulk of the differences (an in-depth discussion is provided in  https://www.bls.gov/opub/btn/archive/differences-between-the-consumer-price-index-and-the-personal-consumption-expenditures-price-index.pdf). As a rule of thumb, CPI inflation typically runs about 1 percentage point higher than PCE inflation.
+
+Now, how concerned should we be? While the spike in inflation is clearly noticeable, it is also clear from the preceeding charts that inflation was undershooting the Federal Reserve's 2% inflation target during most of the past 10 years (this target is for PCE; the CPI-equivalent target would be around 3% - again, inflation in the past 10 years was substantially below target). 
+
+**In fact, consider the following hypothetical thought experiment: If 10 years ago the Fed had committed for the price level (PCE) to rise by 2% annually, how far off would we be today?** 
+    
+The following charts provide the answer. Clockwise, starting at the top-left, we show headline CPI and PCE inflation, and core CPI and PCE inflation (core inflation defines as excluding food and energy). As can be seen, for most of the past 10 years, inflation was _undershooting_ the target, and the most recent rise in inflation is bringing the price level essentially back to target.
+
+
+```{r analysis2, echo = FALSE}
+  
+
+  par(mfrow=c(2,2))
+
+  series = "US.CPI.Headline"
+  x = misc.FREDdowload(series = series)
+  x = x[year(index(x))>(year(Sys.Date())-10)]
+  xtrend = x
+  xtrend = zoo(as.numeric(xtrend[1])*(1.02^(1/12))^seq(0, 10*12), index(x))
+  
+  Chart.Panel(x = x, series = series)
+  lines(xtrend, col = brewer.pal(5, "Paired")[2], lwd = 4)
+
+    series = "US.PCE.Headline"
+  x = misc.FREDdowload(series = series)
+  x = x[year(index(x))>(year(Sys.Date())-10)]
+  xtrend = x
+  xtrend = zoo(as.numeric(xtrend[1])*(1.02^(1/12))^seq(0, 10*12), index(x))
+  
+  Chart.Panel(x = x, series = series)
+  lines(xtrend, col = brewer.pal(5, "Paired")[2], lwd = 4)
+  
+  
+  series = "US.CPI.Core"
+  x = misc.FREDdowload(series = series)
+  x = x[year(index(x))>(year(Sys.Date())-10)]
+  xtrend = x
+  xtrend = zoo(as.numeric(xtrend[1])*(1.02^(1/12))^seq(0, 10*12), index(x))
+  
+  Chart.Panel(x = x, series = series)
+  lines(xtrend, col = brewer.pal(5, "Paired")[2], lwd = 4)
+  
+  series = "US.PCE.Core"
+  x = misc.FREDdowload(series = series)
+  x = x[year(index(x))>(year(Sys.Date())-10)]
+  xtrend = x
+  xtrend = zoo(as.numeric(xtrend[1])*(1.02^(1/12))^seq(0, 10*12), index(x))
+  
+  Chart.Panel(x = x, series = series)
+  lines(xtrend, col = brewer.pal(5, "Paired")[2], lwd = 4)
+```
+  
+# Why It Matters
+
+Based on this, should we conclude that we _shouldn't_ be concerned about the most recent spike in inflation? Not necessarily. There are at least 2 ways to poke holes into this (admittedly simplistic) analysis:
+
+* The charts above plot *all* inflation measures against a 2% trend line; but, as we know, CPI typically runs about 1% above PCE (thought the exact difference can vary over time). One could argue that for CPI 3% inflation should be shown, further amplifying that inflation was undershooting during most of the time period.
+
+* The 10 year period depicted in the charts above is arbitrary, and simply expanding the period to 20 years shows an even greater undershooting of the price level. But, keep in mind that monetary policy has also changed considerably, and during the Greenspan era, the Fed's target was much less transparent. Not having transparent about the target makes evaluating actual inflation outcomes tricky.
+
+```{r analysis3, echo = FALSE}
+  
+
+  par(mfrow=c(1,1))
+  series = "US.PCE.Core"
+  x = misc.FREDdowload(series = series)
+  x = x[year(index(x))>(year(Sys.Date())-20)]
+  xtrend = x
+  xtrend = zoo(as.numeric(xtrend[1])*(1.02^(1/12))^seq(0, 20*12), index(x))
+  
+  Chart.Panel(x = x, series = series)
+  lines(xtrend, col = brewer.pal(5, "Paired")[2], lwd = 4)
+  
+```
+  
+
+All this to say: the verdict on inflation is still out. If the view is correct that recent price pressures are transitory (e.g. driven by supply bottlenecks and base effects), inflation may soon be again below a long-term 2% trend. Conversely, given how broad-based inflation has been in recent months, it is understandable that central bankers have become nervous.
+
+As always, updates to these charts will be regularly posted on Twitter.
