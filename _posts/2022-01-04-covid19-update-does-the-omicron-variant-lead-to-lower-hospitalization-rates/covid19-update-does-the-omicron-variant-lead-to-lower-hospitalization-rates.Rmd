@@ -1,0 +1,200 @@
+---
+title: "COVID19-Update: Does the Omicron variant lead to lower hospitalization rates?"
+description: |
+  In this post we compare hospitalization rates during the panemic
+author:
+  - name: Philipp Maier
+    url: {}
+date: 2022-01-04
+output:
+  distill::distill_article:
+    self_contained: false
+    code_folding: true
+---
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.width=20, fig.height=15) 
+  
+```
+
+# Backdrop
+
+Omicron is the name of the latest COVID 19-variant, discovered in late November 2021. While spreading very fast, available evidence seems to suggest that fewer people catching omicron will get seriously ill. Consequently, the hope is that the rate of people getting hospitalized and/or ending up in intensive care will be much lower.
+^[See e.g. here: https://www.npr.org/2021/12/22/1066649196/omicron-will-cause-more-infections-but-lower-hospital-rates-analysis-shows]
+
+In what follows we will use the "COVID19" R package; the data is from https://covid19datahub.io (retrieved on January 4, 2022). If you want to follow along, click on "Show code" ust above charts.
+
+Let's get some COVID data and explore! 
+
+# Analysis
+
+First, let's look at current infection rates for some key economies. The data field "confirmed" shows the cumulative number of confirmed cases; to calculate new infections, we simly take the difference. Because daily new infections can exhibit high volatility due to weekends or holidays, we follow the convention to also show the 7-day moving average. In the chart below, the spike in late 2021/early 2022 is clearly visible for most countries.
+
+
+```{r analysis1, echo = FALSE}
+
+
+library("COVID19")
+library("RColorBrewer")
+library("reshape")
+library("zoo")
+library("dplyr")
+library("lubridate")
+
+quartzFonts(avenir = c("Avenir Book", "Avenir Black", "Avenir Book Oblique", 
+                       "Avenir Black Oblique"))
+
+options(scipen=5)
+
+
+
+covid.countries = c("United States", "China", "Japan", "Germany", "United Kingdom", "India", "France", "Italy", "Brazil", "Canada", "Spain", "Israel")
+covid.cases     = covid19(covid.countries, verbose = FALSE)
+plot.col        = brewer.pal(10, "Paired")
+
+par(bg = "#f7f7f7")
+par(family = 'avenir')
+
+par(mfrow = c(3,4))
+
+for (idx in covid.countries) {
+  x = covid.cases[covid.cases$administrative_area_level_1==idx, c("date", "confirmed")]
+  x = x[!is.na(x$confirmed),]
+  x = zoo(diff(x$confirmed), as.Date(x$date [1:(nrow(x)-1)] ))
+  x[x<0] = 0 # Fix some data weirdness
+  
+  plot(x, ylab = "Daily Cases (blue) / 7-day average (red)", main = idx, 
+       xlab = "", xaxt = "n", col = plot.col[1], lwd = 3, cex.main = 2.2, cex.axis = 1.4, cex.lab = 1.3)
+  lines(rollmean(x, k=7, align="right", na.rm = TRUE), col = plot.col[6], lwd = 3)
+  points(index(tail(na.omit(x),1)), tail(rollmean(x, k=7, align="right", na.rm = TRUE),1), pch = 19, lwd = 5, col = plot.col[6])
+  axis(1, floor_date(index(x), 'month'), as.yearmon(floor_date(index(x), 'month')), cex.axis = 1)
+  legend("topright", "Data: https://covid19datahub.io", cex=1.0, bty = "n")
+  legend("topleft", paste0("7-day rolling average: ", round( tail(rollmean(x, k=7, align="right", na.rm = TRUE),1)/1000,1), "K"), cex=1.2, bty = "n")
+  grid()
+  
+}
+
+```
+
+The next set of charts shows the number of hospitalized patients, and the number of hospitalized patients in intensive therapy, on a given day. Note that due to some inconsistencies in the data, these fields are not consistently populated for all countries.
+
+```{r analysis2, echo = FALSE}
+
+
+par(mfrow = c(2,4))
+
+for (idx in covid.countries) {
+  x = covid.cases[covid.cases$administrative_area_level_1==idx, c("date", "hosp")]
+  x = zoo(x$hosp, as.Date(x$date))
+  if (length(na.omit(x)) > 0) {
+    plot(x, ylab = "Number of hospitalized patients on date", main = idx,
+         xlab = "", xaxt = "n", col = plot.col[2], lwd = 3, cex.main = 2.2, cex.axis = 1.4, cex.lab = 1.3)
+    
+    points(index(tail(na.omit(x[,idx]),1)), tail(na.omit(x[,idx]),1), pch = 19, lwd = 5, col = plot.col[2])
+    axis(1, floor_date(index(x), 'month'), as.yearmon(floor_date(index(x), 'month')), cex.axis = 1)
+    legend("bottomleft", "Data: https://covid19datahub.io", cex=1.2, bty = "n")
+    legend("topleft", paste0("Peak: ", max(x, na.rm = TRUE),
+                             "\nLatest obs: ", tail(na.omit(x),1)), cex = 1.5, bty = "n")
+    grid()
+  } 
+}
+
+par(mfrow = c(2,4))
+for (idx in covid.countries) {
+  x = covid.cases[covid.cases$administrative_area_level_1==idx, c("date", "icu")]
+  x = zoo(x$icu, as.Date(x$date))
+  if (length(na.omit(x)) > 0) {
+    plot(x, ylab = "Number of hospitalized patients in intensive therapy", main = idx,
+         xlab = "", xaxt = "n", col = plot.col[2], lwd = 3, cex.main = 2.2, cex.axis = 1.4, cex.lab = 1.3)
+    points(index(tail(na.omit(x),1)), tail(na.omit(x),1), pch = 19, lwd = 5, col = plot.col[2])
+    axis(1, floor_date(index(x), 'month'), as.yearmon(floor_date(index(x), 'month')), cex.axis = 1)
+    legend("bottomleft", "Data: https://covid19datahub.io", cex=1.2, bty = "n")
+    legend("topleft", paste0("Peak: ", max(x, na.rm = TRUE),
+                             "\nLatest obs: ", tail(na.omit(x),1)), cex = 1.5, bty = "n")
+    grid()
+  } 
+}
+par(mfrow = c(1,1))
+
+```
+
+Looking e.g. at Canada we see that the spike in infections in the first chart does not translate to an equally large spike in hospitalizations or patients in intensive care. This seems to confirm the notion that omicron could lead to more mild cases.
+
+How would we confirm that claim? I'm an economist, not a specialist in infectuous diseases, and I can't claim any specialized knowledge beyond some simple data operations. Two simplistic metrics come to mind:
+
+* The evolution of the ratio of new infections to patients in intensive care - a somewhat problematic measure, since there may be a time lag between getting infected and requiring intensive care.
+
+* The evolution of patients in the hospital to patients in intensive care - again, some timing issues may be at play, but presumably the lag between admission to the hospital and ICU is shorter, so that measure may be more meaningful.
+
+To smooth out daily fluctutions, we take a 7-day rolling average of the data.^[Recall that this is not a scientific study! :)] 
+
+Let's take a look.
+
+
+
+```{r analysis3, echo = FALSE}
+
+covid.countries = c("United States", "Japan", "Germany", "France", "Italy", "Canada", "Spain", "Israel")
+
+par(mfrow = c(2,4))
+
+for (idx in covid.countries) {
+  x = covid.cases[covid.cases$administrative_area_level_1==idx, c("date", "confirmed", "icu")]
+  x = x[!is.na(x$icu),]
+  x$confirmed = c(0, diff(x$confirmed))
+  x$confirmed[x$confirmed<0] = 0 # Fix some data weirdness
+  
+  x$confirmed = c(rep(0,6), rollmean(x$confirmed, k=7, align = "right", na.rm = TRUE))
+  x$icu       = c(rep(0,6), rollmean(x$icu, k=7, align = "right", na.rm = TRUE))
+  
+  x$confirmed_to_icu = 100 * x$icu / x$confirmed
+  x = zoo(diff(x$confirmed_to_icu), as.Date(x$date [1:(nrow(x)-1)] ))
+  
+  
+  plot(x, ylab = "ICU / New Infections (7-day average)", main = idx, 
+       xlab = "", xaxt = "n", col = plot.col[6], lwd = 3, cex.main = 2.2, cex.axis = 1.4, cex.lab = 1.3)
+  points(index(tail(na.omit(x),1)), tail(rollmean(x, k=7, align="right", na.rm = TRUE),1), pch = 19, lwd = 5, col = plot.col[6])
+  axis(1, floor_date(index(x), 'month'), as.yearmon(floor_date(index(x), 'month')), cex.axis = 1)
+  legend("topright", "Data: https://covid19datahub.io", cex=1.0, bty = "n")
+  legend("topleft", paste0("7-day rolling average: ", round( tail(rollmean(x, k=7, align="right", na.rm = TRUE),1)/1000,1), "K"), cex=1.2, bty = "n")
+  grid()
+  
+}
+
+covid.countries = c("United States", "Japan", "France", "Italy", "Canada", "Spain", "Israel")
+
+for (idx in covid.countries) {
+  x = covid.cases[covid.cases$administrative_area_level_1==idx, c("date", "hosp", "icu")]
+  x = x[!is.na(x$hosp),]
+  
+  x$hosp = c(rep(0,6), rollmean(x$hosp, k=7, align = "right", na.rm = TRUE))
+  x$icu       = c(rep(0,6), rollmean(x$icu, k=7, align = "right", na.rm = TRUE))
+
+  x$hosp_to_icu = 100 * x$icu / x$hosp
+  x = zoo( x$hosp_to_icu, as.Date(x$date ) )
+  
+  plot(x, ylab = "ICU / Hospitalizations (7-day average)", main = idx, 
+       xlab = "", xaxt = "n", col = plot.col[6], lwd = 3, cex.main = 2.2, cex.axis = 1.4, cex.lab = 1.3)
+  points(index(tail(na.omit(x),1)), tail(rollmean(x, k=7, align="right", na.rm = TRUE),1), pch = 19, lwd = 5, col = plot.col[6])
+  axis(1, floor_date(index(x), 'month'), as.yearmon(floor_date(index(x), 'month')), cex.axis = 1)
+  legend("topright", "Data: https://covid19datahub.io", cex=1.0, bty = "n")
+  legend("topleft", paste0("7-day rolling average: ", round( tail(rollmean(x, k=7, align="right", na.rm = TRUE),1)/1000,1), "K"), cex=1.2, bty = "n")
+  grid()
+  
+}
+
+```
+
+
+ 
+# Why It Matters
+
+The charts above support the notion that at least in some countries, the recent spike in infections has not resulted in an equally large increase in the number of severe cases. But, it's still early, and the picture is not clear. If anything, this (admittedly very simplistic) exercise makes it clear why the task of infectuous disease experts is so hard!
+
+As always, updates to COVID 19-numbers will be regularly posted on Twitter.
+
+

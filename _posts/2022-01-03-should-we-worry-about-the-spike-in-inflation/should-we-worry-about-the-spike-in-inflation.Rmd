@@ -147,7 +147,7 @@ Let's explore.
 
 
 
-# Anaysis
+# Analysis
 
 
 First, below the last 10 years of inflation data. The spike in inflation in late 2021 is clearly visible in both inflation measures.
