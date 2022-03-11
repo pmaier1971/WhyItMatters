@@ -6,14 +6,14 @@
       "description": "Why this blog",
       "author": [],
       "contents": "\nDad. Passionate economist. Lousy coder. Intrigued by current developments. Worked for several central banks, and cares about growth, inflation, interest rates - and good forecasting models!\nThis blog complements the posts on https://twitter.com/EconomicsShiny. There are really two reasons for me to start this: first, while I’m not great at writing code, I enjoy it a lot. Second, as an economist I routinely look at economic data releases, but usually the notifications are not exactly reflecting how I’d be looking at the data, and so I thought that I could combine my “hobby” (coding) and my “passion” (economics). As I found myself playing with data and thinking about automating notifications and tweets about new data releases, I realized that not all information may be self-explanatory, and so I decided to write up my thoughts.\nGood to know:\nNo fixed schedule for new blog posts.\nCode for the tweets can be found at https://github.com/pmaier1971/AutomatedEconomicAnalysis (which I’ll update periodically).\nAll economoic data is sourced from FRED (https://fred.stlouisfed.org/); all COVID-related data is from https://covid19datahub.io.\nAll views, and all errors, are mine.\nPosts are created with RStudio/R and the awesome Distill package. Learn more about using Distill at https://rstudio.github.io/distill.\nLastly, check out this blog from my friend Jay: https://jaybrhodes1972.wixsite.com/website\nFeedback? Email me at pmaier1971@gmail.com.\n\n\n\n",
-      "last_modified": "2022-01-03T12:52:25-05:00"
+      "last_modified": "2022-03-11T18:44:25+01:00"
     },
     {
       "path": "index.html",
       "title": "Economics on Twitter: Why It Matters",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2021-11-22T21:05:06-05:00"
+      "last_modified": "2022-03-11T18:44:26+01:00"
     }
   ],
   "collections": ["posts/posts.json"]

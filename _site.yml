@@ -11,6 +11,8 @@ navbar:
       href: index.html
     - text: "About This Blog"
       href: about.html
+    - text: "iOS Apps"
+      href: iOS-apps.html
 collections:
   posts:
     share: [twitter, linkedin]
