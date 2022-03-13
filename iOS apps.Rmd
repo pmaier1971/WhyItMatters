@@ -11,11 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## What's This, Pierre?
 
-My first iOS app is called **What's This, Pierre?** It's a travel app, providing a "personal tour guide" to explain landmarks around you. You can check it out for free on the iOS App Store.
+My first iOS app is called **What's This, Pierre?** It's a travel app, providing a "personal tour guide" to explain landmarks around you. 
+
+You can check it out for free on the iOS App Store (https://apps.apple.com/us/app/whats-this-pierre/id1610551471).
 
 **Privacy Policy**
 
-I built the "What's This, Pierre?" app as a Free app. This SERVICE is provided at no cost and is intended for use as is.
+I built the "What's This, Pierre?" app as a Free app. This service is provided at no cost and is intended for use as is.
 
 This page is used to inform visitors regarding my policies with the collection, use, and disclosure of Personal Information if anyone decided to use my Service.
 

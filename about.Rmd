@@ -12,6 +12,10 @@ Dad. Passionate economist. Lousy coder. Intrigued by current developments. Worke
 
 This blog complements the posts on https://twitter.com/EconomicsShiny. There are really two reasons for me to start this: first, while I'm not great at writing code, I enjoy it a lot. Second, as an economist I routinely look at economic data releases, but usually the notifications are not _exactly_ reflecting how I'd be looking at the data, and so I thought that I could combine my "hobby" (coding) and my "passion" (economics). As I found myself playing with data and thinking about automating notifications and tweets about new data releases, I realized that not all information may be self-explanatory, and so I decided to write up my thoughts.
 
+
+![My, myself and I](Image13.png)
+
+
 Good to know:
 
 - No fixed schedule for new blog posts.
