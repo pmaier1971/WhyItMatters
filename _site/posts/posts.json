@@ -1,5 +1,24 @@
 [
   {
+    "path": "posts/2022-06-13-the-value-of-transportation-indices/",
+    "title": "Transportation Indices; Leading Economic Indicators?",
+    "description": "In this post we examine the value of transportation data as leading indicators",
+    "author": [
+      {
+        "name": "Philipp Maier",
+        "url": {}
+      }
+    ],
+    "date": "2022-06-13",
+    "categories": [],
+    "contents": "\nBackdrop\nTimely, reliable economic data suitable to assess the state of the economy is hard to come by.\nHigh-frequency data can be volatile, and are only moderately useful to gauge current economic developments. On the surface, transportation data could be useful - after all, GDP measures the value of good and services consumed, and in order to consume good, you first have to deliver them to consumers. This is where transportation services play a pivotal role. At the same time, GDP does not only include goods, and some sectors driving GDP barely require transportation services.\nResearch by the Bureau of Transportation Statistics (BTS) has concluded that changes in freight indices can be potentially useful leading economic indicators (https://www.bts.gov/archive/publications/special_reports_and_issue_briefs/special_report/2014_12_10/entire). Let’s visualize this.\nAnalysis\nFirst off, let’s plot historical data for freight and passenger transportation services. We shade past recessions in these charts.\n\n\n\nWhile the BTS employs data going back to the 1980s, the data repository from the St. Louis Fed only has data starting in 2000. This obviously limits any statistical analysis we can conduct. That said, the chart does indicate that during recessions, transportation services tend to decline.\nNext, let’s plot the series against historical data.\n\n\n\nThe top two charts compare transportation data against payroll; the bottom two charts against industrial production.\nOverall, transportation data seems to be tracking economic data quite well; in particular the relationship with industrial production seems quite clear. All in all, this suggests that transportation data is useful.\nThat said, as can be seen the second chart, the pitfalls mentioned above are real: while freight transportation services seems to predict changes in payroll data quite well, the passenger data suggests a much sharper decline in payroll in the early 2000 than actually happened. In other words, the indicator isn’t perfect.\nWhy It Matters\nIn mid-2022 uncertainty about the state of the economy is high. As the Federal Reserve is tightening monetary policy, economists monitor early or “leading” indicators to see if rising rates slow down the economy, and how fast - in other words, they look for clues whether we may or may not be seeing a recession.\nTransportation data can offer some insight, but caution is warranted for two reasons:\nFirst, as seen in the short exploration above, the data is not always a reliable signal; its usefulness depends on the type of economic development anticipated. If one thinks that the next recession is driven by declines in demand (i.e. lower production and consumption of manufactured goods), then freight transportation data may be very useful.\nSecond, with the current supply chain issues, it is possible that the signal from transportation data is not “clean” - in other words, there may be other developments clouding the transportation sector, making the indicator less reliable.\nLet’s see in the coming months how this will play out. As always, updates to these charts will be regularly posted on my Twitter feed.\n\n\n\n",
+    "preview": "posts/2022-06-13-the-value-of-transportation-indices/the-value-of-transportation-indices_files/figure-html5/analysis1-1-1.png",
+    "last_modified": "2022-06-13T21:43:56-04:00",
+    "input_file": "the-value-of-transportation-indices.knit.md",
+    "preview_width": 2880,
+    "preview_height": 1920
+  },
+  {
     "path": "posts/2022-01-04-covid19-update-does-the-omicron-variant-lead-to-lower-hospitalization-rates/",
     "title": "COVID19-Update: Does the Omicron variant lead to lower hospitalization rates?",
     "description": "In this post we compare hospitalization rates during the panemic",
